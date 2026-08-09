@@ -1,0 +1,37 @@
+{
+  "datasetId": "qc-report",
+  "version": "1.0.0",
+  "dataType": "quality_report",
+  "state": "PENDING",
+  "schema": {
+    "format": "html+zip",
+    "producer": "multiqc"
+  },
+  "provenance": {
+    "derivedFrom": ["raw-reads@1.2.0", "trimmed-reads@1.1.0"],
+    "producedBy": "MULTIQC",
+    "custodian": "nf-core",
+    "retentionDays": 365
+  },
+  "policy": {
+    "classification": "public-test-data",
+    "rationale": "Aggregation is the stage where a reader first sees results, so it is the stage most worth gating on completeness of its inputs."
+  },
+  "permissibleActions": [
+    {
+      "name": "aggregate",
+      "requiresState": ["PENDING"],
+      "conditions": {
+        "reportFormat": { "in": ["multiqc"] },
+        "minInputStages": { "min": 2 }
+      }
+    },
+    {
+      "name": "release",
+      "requiresState": ["COMPLETE"],
+      "conditions": {
+        "approvedBy": { "present": true }
+      }
+    }
+  ]
+}

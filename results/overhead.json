@@ -1,0 +1,134 @@
+{
+  "baseline": {
+    "completed": 7,
+    "durationMedianSec": 2.3,
+    "durationTotalSec": 21.2,
+    "failed": 0,
+    "realtimeMedianSec": 2.0,
+    "realtimeTotalSec": 19.8,
+    "tasks": 7
+  },
+  "decisions": {
+    "gateProcessMedianMicros": 122,
+    "permits": 7,
+    "policyEvalMedianMicros": 11,
+    "refusals": 0,
+    "refusalsByClass": {},
+    "total": 7
+  },
+  "gated": {
+    "completed": 7,
+    "durationMedianSec": 2.3,
+    "durationTotalSec": 20.4,
+    "failed": 0,
+    "realtimeMedianSec": 2.0,
+    "realtimeTotalSec": 19.6,
+    "tasks": 7
+  },
+  "perTask": {
+    "duration": {
+      "absoluteOverheadSec": -0.8,
+      "baselineTotalSec": 21.2,
+      "gatedTotalSec": 20.4,
+      "medianDeltaSec": 0.0,
+      "pairedTasks": 7,
+      "relativeOverheadPct": -3.77,
+      "tasks": [
+        {
+          "baselineSec": 2.3,
+          "deltaSec": 0.0,
+          "gatedSec": 2.3,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE1_PE)"
+        },
+        {
+          "baselineSec": 3.4,
+          "deltaSec": -0.9,
+          "gatedSec": 2.5,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE2_PE)"
+        },
+        {
+          "baselineSec": 2.4,
+          "deltaSec": -0.1,
+          "gatedSec": 2.3,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE3_SE)"
+        },
+        {
+          "baselineSec": 7.0,
+          "deltaSec": -0.1,
+          "gatedSec": 6.9,
+          "name": "NFCORE_DEMO:DEMO:MULTIQC"
+        },
+        {
+          "baselineSec": 2.3,
+          "deltaSec": 0.1,
+          "gatedSec": 2.4,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE1_PE)"
+        },
+        {
+          "baselineSec": 1.8,
+          "deltaSec": 0.2,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE2_PE)"
+        },
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE3_SE)"
+        }
+      ]
+    },
+    "realtime": {
+      "absoluteOverheadSec": -0.2,
+      "baselineTotalSec": 19.8,
+      "gatedTotalSec": 19.6,
+      "medianDeltaSec": 0.0,
+      "pairedTasks": 7,
+      "relativeOverheadPct": -1.01,
+      "tasks": [
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE1_PE)"
+        },
+        {
+          "baselineSec": 3.0,
+          "deltaSec": 0.0,
+          "gatedSec": 3.0,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE2_PE)"
+        },
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE3_SE)"
+        },
+        {
+          "baselineSec": 6.8,
+          "deltaSec": -0.2,
+          "gatedSec": 6.6,
+          "name": "NFCORE_DEMO:DEMO:MULTIQC"
+        },
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE1_PE)"
+        },
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE2_PE)"
+        },
+        {
+          "baselineSec": 2.0,
+          "deltaSec": 0.0,
+          "gatedSec": 2.0,
+          "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE3_SE)"
+        }
+      ]
+    }
+  }
+}

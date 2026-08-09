@@ -1,0 +1,46 @@
+{
+  "datasetId": "trimmed-reads",
+  "version": "1.1.0",
+  "dataType": "sequencing_reads",
+  "state": "TRIMMED",
+  "schema": {
+    "format": "fastq.gz",
+    "layout": "paired",
+    "platform": "illumina",
+    "trimmer": "seqtk"
+  },
+  "provenance": {
+    "derivedFrom": "raw-reads@1.2.0",
+    "producedBy": "SEQTK_TRIM",
+    "custodian": "nf-core",
+    "retentionDays": 365
+  },
+  "policy": {
+    "classification": "public-test-data",
+    "rationale": "Derived dataset. Its descriptor exists so that the stage consuming it is gated on the state its producer left it in, not on a global flag."
+  },
+  "permissibleActions": [
+    {
+      "name": "qc",
+      "requiresState": ["TRIMMED"],
+      "conditions": {
+        "platform": { "in": ["illumina"] }
+      }
+    },
+    {
+      "name": "aggregate",
+      "requiresState": ["TRIMMED"],
+      "conditions": {
+        "reportFormat": { "in": ["multiqc"] }
+      }
+    },
+    {
+      "name": "align",
+      "requiresState": ["TRIMMED"],
+      "conditions": {
+        "referenceBuild": { "in": ["GRCh38"] },
+        "minMapQ": { "min": 30 }
+      }
+    }
+  ]
+}

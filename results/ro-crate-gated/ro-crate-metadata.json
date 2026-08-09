@@ -1,0 +1,419 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.1/context",
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "conformsTo": {
+        "@id": "https://w3id.org/ro/crate/1.1"
+      },
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "Gated run of nf-core/demo",
+      "description": "Workflow Run RO-Crate for a real nf-core execution, extended with prospective admission decisions recorded before each task.",
+      "conformsTo": [
+        {
+          "@id": "https://w3id.org/ro/wfrun/workflow/0.5"
+        },
+        {
+          "@id": "https://w3id.org/ro/wfrun/process/0.5"
+        }
+      ],
+      "mentions": [
+        {
+          "@id": "#run"
+        }
+      ],
+      "hasPart": [
+        {
+          "@id": "workflow.nf"
+        }
+      ]
+    },
+    {
+      "@id": "https://w3id.org/ro/wfrun/workflow/0.5",
+      "@type": "CreativeWork",
+      "name": "Workflow Run Crate",
+      "version": "0.5"
+    },
+    {
+      "@id": "https://w3id.org/ro/wfrun/process/0.5",
+      "@type": "CreativeWork",
+      "name": "Process Run Crate",
+      "version": "0.5"
+    },
+    {
+      "@id": "workflow.nf",
+      "@type": [
+        "File",
+        "SoftwareSourceCode",
+        "ComputationalWorkflow"
+      ],
+      "name": "nf-core/demo",
+      "version": "1.0.1",
+      "programmingLanguage": {
+        "@id": "#nextflow"
+      }
+    },
+    {
+      "@id": "#nextflow",
+      "@type": "ComputerLanguage",
+      "name": "Nextflow",
+      "url": "https://www.nextflow.io/"
+    },
+    {
+      "@id": "#task-4",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE2_PE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:56:57.836",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2.5s",
+      "nfRealtime": "3s",
+      "nfHash": "17/cc22ab"
+    },
+    {
+      "@id": "#task-3",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE2_PE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:00.325",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2s",
+      "nfRealtime": "2s",
+      "nfHash": "07/8f94f5"
+    },
+    {
+      "@id": "#task-6",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE3_SE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:02.290",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2.3s",
+      "nfRealtime": "2s",
+      "nfHash": "f3/12a94d"
+    },
+    {
+      "@id": "#task-5",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE3_SE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:04.621",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2s",
+      "nfRealtime": "2s",
+      "nfHash": "76/7ce80d"
+    },
+    {
+      "@id": "#task-1",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE1_PE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:06.650",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2.4s",
+      "nfRealtime": "2s",
+      "nfHash": "da/da133f"
+    },
+    {
+      "@id": "#task-2",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE1_PE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:09.022",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2.3s",
+      "nfRealtime": "2s",
+      "nfHash": "64/e40937"
+    },
+    {
+      "@id": "#task-7",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:MULTIQC",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:11.389",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "6.9s",
+      "nfRealtime": "6.6s",
+      "nfHash": "03/44c098"
+    },
+    {
+      "@id": "#decision-0",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:qc",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:56:57.870Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "qc",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 8
+    },
+    {
+      "@id": "#decision-1",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:trim",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:00.372Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "trim",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": 20,
+          "name": "minReadLength",
+          "observed": 30,
+          "operator": ">=",
+          "passed": true
+        },
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 11
+    },
+    {
+      "@id": "#decision-2",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:qc",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:02.321Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "qc",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 7
+    },
+    {
+      "@id": "#decision-3",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:trim",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:04.654Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "trim",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": 20,
+          "name": "minReadLength",
+          "observed": 30,
+          "operator": ">=",
+          "passed": true
+        },
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 11
+    },
+    {
+      "@id": "#decision-4",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:trim",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:06.683Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "trim",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": 20,
+          "name": "minReadLength",
+          "observed": 30,
+          "operator": ">=",
+          "passed": true
+        },
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 11
+    },
+    {
+      "@id": "#decision-5",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:qc",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:09.053Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "qc",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 7
+    },
+    {
+      "@id": "#decision-6",
+      "@type": "ControlAction",
+      "name": "PERMIT qc-report:aggregate",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:11.420Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "qc-report",
+      "gateDescriptorVersion": "1.0.0",
+      "gateAction": "aggregate",
+      "gateObservedState": "PENDING",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": 2,
+          "name": "minInputStages",
+          "observed": 2,
+          "operator": ">=",
+          "passed": true
+        },
+        {
+          "expected": [
+            "multiqc"
+          ],
+          "name": "reportFormat",
+          "observed": "multiqc",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 12
+    },
+    {
+      "@id": "#run",
+      "@type": "CreateAction",
+      "name": "nf-core/demo run",
+      "instrument": {
+        "@id": "workflow.nf"
+      },
+      "object": [
+        {
+          "@id": "#decision-0"
+        },
+        {
+          "@id": "#decision-1"
+        },
+        {
+          "@id": "#decision-2"
+        },
+        {
+          "@id": "#decision-3"
+        },
+        {
+          "@id": "#decision-4"
+        },
+        {
+          "@id": "#decision-5"
+        },
+        {
+          "@id": "#decision-6"
+        }
+      ],
+      "result": [
+        {
+          "@id": "#task-4"
+        },
+        {
+          "@id": "#task-3"
+        },
+        {
+          "@id": "#task-6"
+        },
+        {
+          "@id": "#task-5"
+        },
+        {
+          "@id": "#task-1"
+        },
+        {
+          "@id": "#task-2"
+        },
+        {
+          "@id": "#task-7"
+        }
+      ],
+      "description": "7 executed task(s); 7 permitted, 0 refused."
+    }
+  ]
+}

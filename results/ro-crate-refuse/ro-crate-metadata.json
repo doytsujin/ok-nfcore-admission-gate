@@ -1,0 +1,180 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.1/context",
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "conformsTo": {
+        "@id": "https://w3id.org/ro/crate/1.1"
+      },
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "Gated run of nf-core/demo",
+      "description": "Workflow Run RO-Crate for a real nf-core execution, extended with prospective admission decisions recorded before each task.",
+      "conformsTo": [
+        {
+          "@id": "https://w3id.org/ro/wfrun/workflow/0.5"
+        },
+        {
+          "@id": "https://w3id.org/ro/wfrun/process/0.5"
+        }
+      ],
+      "mentions": [
+        {
+          "@id": "#run"
+        }
+      ],
+      "hasPart": [
+        {
+          "@id": "workflow.nf"
+        }
+      ]
+    },
+    {
+      "@id": "https://w3id.org/ro/wfrun/workflow/0.5",
+      "@type": "CreativeWork",
+      "name": "Workflow Run Crate",
+      "version": "0.5"
+    },
+    {
+      "@id": "https://w3id.org/ro/wfrun/process/0.5",
+      "@type": "CreativeWork",
+      "name": "Process Run Crate",
+      "version": "0.5"
+    },
+    {
+      "@id": "workflow.nf",
+      "@type": [
+        "File",
+        "SoftwareSourceCode",
+        "ComputationalWorkflow"
+      ],
+      "name": "nf-core/demo",
+      "version": "1.0.1",
+      "programmingLanguage": {
+        "@id": "#nextflow"
+      }
+    },
+    {
+      "@id": "#nextflow",
+      "@type": "ComputerLanguage",
+      "name": "Nextflow",
+      "url": "https://www.nextflow.io/"
+    },
+    {
+      "@id": "#task-3",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE2_PE)",
+      "actionStatus": "http://schema.org/FailedActionStatus",
+      "startTime": "2026-08-09 15:57:46.998",
+      "endTime": "",
+      "nfExitStatus": "3",
+      "nfDuration": "71ms",
+      "nfRealtime": "33ms",
+      "nfHash": "a2/5ce17b"
+    },
+    {
+      "@id": "#task-4",
+      "@type": "CreateAction",
+      "name": "NFCORE_DEMO:DEMO:FASTQC (SAMPLE2_PE)",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09 15:57:47.078",
+      "endTime": "",
+      "nfExitStatus": "0",
+      "nfDuration": "2.4s",
+      "nfRealtime": "2s",
+      "nfHash": "37/530f25"
+    },
+    {
+      "@id": "#decision-0",
+      "@type": "ControlAction",
+      "name": "REFUSE raw-reads:trim",
+      "actionStatus": "http://schema.org/FailedActionStatus",
+      "startTime": "2026-08-09T19:57:47.034Z",
+      "gateVerdict": "REFUSE",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "trim",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": "CONDITION_VIOLATED",
+      "gateReasons": [
+        "minReadLength: 10 violates >= 20"
+      ],
+      "gateConditionsChecked": [
+        {
+          "expected": 20,
+          "name": "minReadLength",
+          "observed": 10,
+          "operator": ">=",
+          "passed": false
+        },
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 14
+    },
+    {
+      "@id": "#decision-1",
+      "@type": "ControlAction",
+      "name": "PERMIT raw-reads:qc",
+      "actionStatus": "http://schema.org/CompletedActionStatus",
+      "startTime": "2026-08-09T19:57:47.127Z",
+      "gateVerdict": "PERMIT",
+      "gateDataset": "raw-reads",
+      "gateDescriptorVersion": "1.2.0",
+      "gateAction": "qc",
+      "gateObservedState": "QC_PASSED",
+      "gateReasonClass": null,
+      "gateReasons": [],
+      "gateConditionsChecked": [
+        {
+          "expected": [
+            "illumina"
+          ],
+          "name": "platform",
+          "observed": "illumina",
+          "operator": "in",
+          "passed": true
+        }
+      ],
+      "gateEvalMicros": 10
+    },
+    {
+      "@id": "#run",
+      "@type": "CreateAction",
+      "name": "nf-core/demo run",
+      "instrument": {
+        "@id": "workflow.nf"
+      },
+      "object": [
+        {
+          "@id": "#decision-0"
+        },
+        {
+          "@id": "#decision-1"
+        }
+      ],
+      "result": [
+        {
+          "@id": "#task-3"
+        },
+        {
+          "@id": "#task-4"
+        }
+      ],
+      "description": "2 executed task(s); 1 permitted, 1 refused."
+    }
+  ]
+}

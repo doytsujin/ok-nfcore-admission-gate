@@ -1,0 +1,46 @@
+{
+  "datasetId": "raw-reads",
+  "version": "1.2.0",
+  "dataType": "sequencing_reads",
+  "state": "QC_PASSED",
+  "schema": {
+    "format": "fastq.gz",
+    "layout": "paired",
+    "platform": "illumina",
+    "assay": "amplicon"
+  },
+  "provenance": {
+    "source": "nf-core/test-datasets (viralrecon illumina amplicon samplesheet)",
+    "custodian": "nf-core",
+    "retentionDays": 730
+  },
+  "policy": {
+    "classification": "public-test-data",
+    "rationale": "Public nf-core test data. The conditions below are the shape of a regulated descriptor, applied to data that carries no restriction, so the artifact can be run and re-run by anyone."
+  },
+  "permissibleActions": [
+    {
+      "name": "qc",
+      "requiresState": ["RECEIVED", "QC_PASSED"],
+      "conditions": {
+        "platform": { "in": ["illumina"] }
+      }
+    },
+    {
+      "name": "trim",
+      "requiresState": ["QC_PASSED"],
+      "conditions": {
+        "minReadLength": { "min": 20 },
+        "platform": { "in": ["illumina"] }
+      }
+    },
+    {
+      "name": "align",
+      "requiresState": ["TRIMMED"],
+      "conditions": {
+        "referenceBuild": { "in": ["GRCh38"] },
+        "minMapQ": { "min": 30 }
+      }
+    }
+  ]
+}

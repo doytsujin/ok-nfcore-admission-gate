@@ -1,0 +1,6 @@
+toolchain/
+runs/
+pipeline-nfcore-demo/
+__pycache__/
+*.pyc
+.nextflow*
