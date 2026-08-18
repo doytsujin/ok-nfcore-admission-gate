@@ -1,5 +1,18 @@
 toolchain/
-runs/
+# Trace files are kept; run outputs and work directories are not. The traces are
+# not build output -- they are the evidence the README's tables and the corpus in
+# DATASET.md are computed from, and a manifest pointing at files that are not in
+# the repository describes nothing. The *_out and work_* trees beside them are
+# ~95 MB of regenerable pipeline output and stay ignored.
+#
+# Written as `runs/*` rather than `runs/` on purpose: git cannot re-include a
+# path whose parent directory is itself excluded, so excluding children
+# individually is what makes the negations below work at all.
+runs/*
+!runs/*_trace.txt
+!runs/replicates/
+runs/replicates/*
+!runs/replicates/*_trace.txt
 pipeline-nfcore-demo/
 __pycache__/
 *.pyc

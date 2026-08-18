@@ -52,16 +52,87 @@ The gate's own cost, measured inside the gate process across all 7 decisions:
 | Policy evaluation | **11 µs** |
 | Gate process, argument parse to record written | **122 µs** |
 
-**The headline is that the overhead is below the measurement floor, and the
-negative numbers are noise rather than a speedup.** Nextflow reports per-task
-`realtime` at one-second granularity, so a 122 µs hook cannot appear in it at
-all; run-to-run variance in container startup is several orders of magnitude
-larger than the thing being measured. The honest statement is that a gate
-costing ~10⁻⁴ s per task, against tasks costing ~10⁰ s, is not observable in
-end-to-end pipeline timing.
+At n=1 the negative numbers read as noise rather than a speedup, and the
+conclusion drawn was that the overhead sits below the measurement floor.
+**Thirty replicates say that conclusion was half right, and the half that was
+wrong is the interesting half.** See the next section.
 
-That is a different and stronger claim than the paper's modelled 3.2%, and it
-is the claim the evidence here supports.
+Either way it is a different and stronger claim than the paper's modelled 3.2%,
+because it comes from a clock.
+
+## Replication (n = 30)
+
+`./bench/replicate.sh` runs 30 replicates of all three arms, **interleaved
+rather than blocked** — replicate 1 of each arm, then replicate 2 of each — so
+that machine state drifting over the hour lands on every arm equally instead of
+on whichever arm ran last. `bench/aggregate.py` then pairs by replicate index,
+which removes the drift both arms of a replicate share. Numbers from
+`results/replication.json`; 90 runs, 285 decision records.
+
+### The microsecond claims replicate
+
+| | published (n=1, 7 decisions) | replicated (210 decisions) |
+|---|---:|---:|
+| Policy evaluation, median | 11 µs | **11 µs** (mean 10.6, p95 15, max 30) |
+| Gate process, median | 122 µs | **119 µs** (mean 127, p95 155, max 260) |
+
+### End to end, the overhead is now resolvable — and it is not the policy
+
+| paired delta, gated − baseline | mean | 95% CI | resolves? |
+|---|---:|---:|:--:|
+| Per run, task `realtime` total | +0.197 s | [−0.323, +0.716] | no |
+| Per run, task `duration` total | +0.180 s | [+0.042, +0.319] | **yes** |
+| Per task, `duration` | +25.7 ms | [+3.3, +48.2] | **yes** |
+| Per task, `realtime` | +28.1 ms | [−50.0, +106.2] | no |
+
+The two fields agree on the size of the effect and disagree on whether it can
+be seen: Nextflow writes `realtime` at one-second granularity and `duration` at
+one-tenth, and only the finer one resolves ~26 ms. So the n=1 statement — that
+the overhead is below the measurement floor — was a statement about the floor,
+not about the overhead.
+
+**What the ~26 ms is.** Not policy evaluation, which is 11 µs. The gate is
+deployed as one `python3 -m gate` subprocess per task, and
+`bench/subprocess_cost.py` measures that invocation end to end:
+
+| | median |
+|---|---:|
+| `python3 -m gate`, whole process | **30.2 ms** |
+| bare `python3 -c pass` | 9.6 ms |
+| the gate's own imports and work | 20.6 ms |
+
+30.2 ms sits inside the [+3.3, +48.2] ms interval the replication measured, so
+the per-task delta is accounted for by the mechanism rather than left to
+speculation. Against ~2.8 s tasks it is about 0.9%.
+
+The separation is the result worth having. **The decision costs 11 µs; the
+decision's delivery costs 30 ms — 2700× more than the thing it delivers.** A
+resident gate, or a hook that is not a fresh interpreter, would recover nearly
+all of it, and the 11 µs figure says there is nothing else to recover. The
+artifact's headline claim survives for the policy engine and fails for the
+deployment, which is a distinction the single run could not draw.
+
+### The refusal holds in every replicate
+
+`SEQTK_TRIM` completed **0 times in 30 refusal-arm replicates**. That claim is
+not statistical — one counterexample would falsify the whole artifact — so
+`bench/aggregate.py` checks it rather than assuming it. The refusal arm produced
+37 refusals across 30 runs, all `CONDITION_VIOLATED`, alongside 38 permits;
+more than one refusal per run occurs because three samples reach `SEQTK_TRIM`
+and Nextflow has submitted the next before the first refusal stops the run.
+
+Refusals cost more than permits inside the gate process — 146 µs median against
+119 — because a refusal record carries reasons and the full condition list.
+
+### The corpus
+
+`bench/package_corpus.py` writes `dataset/MANIFEST.json`: every trace, decision
+log and descriptor with a SHA-256 and a record count, so a reader can tell
+whether the corpus they have is the corpus that was described. It also emits
+`dataset/gate-decisions.croissant.json` — the corpus described with the policy
+profile from [dk-croissant-policy-profile](../dk-croissant-policy-profile),
+which is the cheapest available check that the profile survives contact with a
+dataset it was not designed around.
 
 ### Refusal
 
@@ -113,6 +184,10 @@ only what failed cannot show that the other rules were evaluated.
 
 ```bash
 ./bench/run.sh all        # baseline, gated, refusal, then measure
+./bench/replicate.sh      # 30 replicates of all three arms, interleaved
+./bench/aggregate.py      # paired intervals from the replicates
+./bench/subprocess_cost.py  # what the gate costs as a process, not a function
+./bench/package_corpus.py   # manifest + Croissant description of the corpus
 ./bench/run.sh baseline   # ungated reference
 ./bench/run.sh gated      # gate admits every task
 ./bench/run.sh refuse     # gate refuses SEQTK_TRIM
@@ -142,10 +217,18 @@ cost time and will recur:
 
 ## Honest limits
 
-- **n = 1 per arm.** One baseline and one gated run. Enough to establish that
-  the gate's cost is below the trace's resolution; not enough to put a
-  confidence interval on the end-to-end difference. Repeated runs are the
-  first thing to add.
+- ~~**n = 1 per arm.**~~ Closed: 30 replicates per arm, interleaved and paired.
+  It cost the original headline half its claim, which is what replication is
+  for.
+- **The per-task interval is wide and quantized.** [+3.3, +48.2] ms is a factor
+  of fifteen, and the underlying per-task deltas are quantized to Nextflow's
+  0.1 s `duration` resolution — 102 of 210 paired tasks show exactly zero, and
+  the signal is the asymmetry between 71 tasks at +0.1 s and 19 at −0.1 s. The
+  direction and the rough magnitude are sound; the interval should not be read
+  as a precise figure.
+- **The subprocess cost is machine-specific.** 30.2 ms is this interpreter on
+  this host. It is the right order of magnitude for CPython process startup plus
+  imports, not a portable constant.
 - **The pipeline is small.** Three processes, three samples, ~20 s of task
   time. It demonstrates the mechanism on real execution; it is not a
   production-scale workload.

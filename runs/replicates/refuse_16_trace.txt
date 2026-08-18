@@ -1,0 +1,4 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+6	6d/8d302c	161458	NFCORE_DEMO:DEMO:FASTQC (SAMPLE3_SE)	COMPLETED	0	2026-08-18 14:08:57.770	2.4s	3s	199.0%	650.3 MB	18.6 GB	17.8 MB	4.6 MB
+5	cc/d55ee1	161827	NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE3_SE)	FAILED	3	2026-08-18 14:09:00.217	78ms	10ms	-	-	-	-	-
+4	79/779ea6	161856	NFCORE_DEMO:DEMO:SEQTK_TRIM (SAMPLE2_PE)	FAILED	3	2026-08-18 14:09:00.302	72ms	44ms	-	-	-	-	-

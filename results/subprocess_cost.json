@@ -1,0 +1,23 @@
+{
+  "bareInterpreter": {
+    "maxMs": 13.1,
+    "meanMs": 9.78,
+    "medianMs": 9.62,
+    "minMs": 7.91,
+    "n": 60,
+    "p95Ms": 12.86,
+    "sdMs": 1.32
+  },
+  "gateOwnWorkMs": 20.6,
+  "gateProcess": {
+    "maxMs": 39.43,
+    "meanMs": 31.24,
+    "medianMs": 30.22,
+    "minMs": 28.95,
+    "n": 60,
+    "p95Ms": 37.11,
+    "sdMs": 2.38
+  },
+  "note": "The gate's self-reported wallMicros (~119 us median over 210 real decisions) measures argument parse to record written, inside the process. This measures the process. The difference is what a per-task subprocess deployment costs and what the end-to-end per-task delta is made of.",
+  "pythonVersion": "3.12.13"
+}

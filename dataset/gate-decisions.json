@@ -1,0 +1,65 @@
+{
+  "datasetId": "gate-decisions",
+  "version": "1.0.0",
+  "dataType": "admission_decision_records",
+  "state": "REPLICATED",
+  "schema": {
+    "format": "jsonl",
+    "layout": "one-record-per-decision",
+    "engine": "nextflow-24.10.5",
+    "pipeline": "nf-core/demo-1.0.1"
+  },
+  "provenance": {
+    "source": "30 interleaved replicates of three arms (baseline, gated, refuse) of nf-core/demo v1.0.1 under a prospective admission gate, on real nf-core/test-datasets Illumina amplicon reads",
+    "producedBy": "bench/replicate.sh",
+    "custodian": "dk-nfcore-admission-gate",
+    "retentionDays": 3650
+  },
+  "policy": {
+    "classification": "public-derived-measurement",
+    "rationale": "Timings and decision records over public test data. Nothing here is restricted; the conditions exist so that a consumer cannot quietly reuse a subset the published interval was not computed over."
+  },
+  "permissibleActions": [
+    {
+      "name": "analyze",
+      "requiresState": [
+        "REPLICATED"
+      ],
+      "conditions": {
+        "replicates": {
+          "min": 30
+        },
+        "arm": {
+          "in": [
+            "baseline",
+            "gated",
+            "refuse"
+          ]
+        }
+      }
+    },
+    {
+      "name": "cite",
+      "requiresState": [
+        "REPLICATED",
+        "ARCHIVED"
+      ],
+      "conditions": {
+        "manifestSha256": {
+          "present": true
+        }
+      }
+    },
+    {
+      "name": "redistribute",
+      "requiresState": [
+        "ARCHIVED"
+      ],
+      "conditions": {
+        "decisionRecords": {
+          "min": 210
+        }
+      }
+    }
+  ]
+}
