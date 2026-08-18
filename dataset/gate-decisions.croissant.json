@@ -2,7 +2,6 @@
   "@context": {
     "@language": "en",
     "@vocab": "https://schema.org/",
-    "arrayShape": "cr:arrayShape",
     "citeAs": "cr:citeAs",
     "column": "cr:column",
     "conformsTo": "dct:conformsTo",
@@ -11,13 +10,12 @@
       "@id": "cr:data",
       "@type": "@json"
     },
-    "dataBiases": "cr:dataBiases",
-    "dataCollection": "cr:dataCollection",
     "dataType": {
       "@id": "cr:dataType",
       "@type": "@vocab"
     },
     "dct": "http://purl.org/dc/terms/",
+    "equivalentProperty": "cr:equivalentProperty",
     "examples": {
       "@id": "cr:examples",
       "@type": "@json"
@@ -29,7 +27,6 @@
     "fileSet": "cr:fileSet",
     "format": "cr:format",
     "includes": "cr:includes",
-    "isArray": "cr:isArray",
     "isLiveDataset": "cr:isLiveDataset",
     "jsonPath": "cr:jsonPath",
     "key": "cr:key",
@@ -42,6 +39,7 @@
     "regex": "cr:regex",
     "repeated": "cr:repeated",
     "replace": "cr:replace",
+    "samplingRate": "cr:samplingRate",
     "sc": "https://schema.org/",
     "separator": "cr:separator",
     "source": "cr:source",
@@ -68,7 +66,7 @@
     "name": "dk-nfcore-admission-gate"
   },
   "additionalType": "admission_decision_records",
-  "dataCollection": "30 interleaved replicates of three arms (baseline, gated, refuse) of nf-core/demo v1.0.1 under a prospective admission gate, on real nf-core/test-datasets Illumina amplicon reads",
+  "rai:dataCollection": "30 interleaved replicates of three arms (baseline, gated, refuse) of nf-core/demo v1.0.1 under a prospective admission gate, on real nf-core/test-datasets Illumina amplicon reads",
   "measurementTechnique": "bench/replicate.sh",
   "variableMeasured": [
     {
@@ -97,12 +95,12 @@
       "includes": "*.jsonl"
     },
     {
-      "@type": "cr:FileObject",
-      "@id": "results/replicates",
-      "name": "results/replicates",
+      "@type": "cr:FileSet",
+      "@id": "replicates",
+      "name": "replicates",
       "description": "Decision records emitted by the gate for this dataset.",
       "encodingFormat": "application/jsonl",
-      "contentUrl": "results/replicates"
+      "includes": "results/replicates/*.jsonl"
     }
   ],
   "cpol:policy": {
@@ -172,7 +170,7 @@
       }
     ],
     "cpol:decisionRecord": {
-      "@id": "results/replicates"
+      "@id": "replicates"
     }
   }
 }

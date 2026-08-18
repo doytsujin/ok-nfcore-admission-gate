@@ -131,7 +131,10 @@ of what makes the record evidence.
 `results/subprocess_cost.json` the process-level timings;
 `dataset/gate-decisions.croissant.json` describes the corpus as a policy-bearing
 Croissant document, so the corpus is discoverable through the same mechanism it
-is about.
+is about. That document **loads under MLCommons' `mlcroissant` 1.1.0 with zero
+errors**, which matters here rather than being a detail: a data descriptor's
+machine-readable metadata is only useful if a standard consumer can read it, and
+"valid Croissant" is a claim that has to be run rather than asserted.
 
 ## Technical Validation
 
@@ -203,4 +206,5 @@ under `toolchain/` so nothing is installed system-wide.
    deposited with a DOI, which means a Zenodo deposit. Not done; it is an
    external publication step.
 3. **The RO-Crate profile validator**, which would let the provenance claim be
-   stated as validated rather than as conforming in shape.
+   stated as validated rather than as conforming in shape. The Croissant half of
+   the metadata is already validated; this is the other half.
