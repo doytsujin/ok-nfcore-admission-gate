@@ -12,7 +12,7 @@ Nothing is copied. The files already live in the repository under
 `dataset/` tree would double the bytes and create a second thing to keep in
 sync. The manifest points at them where they are.
 
-If `croissant_policy` from dk-croissant-policy-profile is importable, the
+If `croissant_policy` from ok-croissant-policy-profile is importable, the
 corpus is also emitted as a policy-bearing Croissant document. That is not
 decoration: the corpus is a dataset of admission decisions, it has a state and
 conditions of use like any other, and describing it with the profile is the
@@ -187,7 +187,7 @@ def main() -> int:
     print(f"wrote {native_path}")
 
     # Optional: describe the corpus with the Croissant policy profile.
-    profile_root = os.environ.get("CPOL_ROOT", str(ROOT.parent / "dk-croissant-policy-profile"))
+    profile_root = os.environ.get("CPOL_ROOT", str(ROOT.parent / "ok-croissant-policy-profile"))
     if (Path(profile_root) / "croissant_policy" / "emit.py").is_file():
         sys.path.insert(0, profile_root)
         from croissant_policy import emit, validate  # noqa: PLC0415
@@ -205,7 +205,7 @@ def main() -> int:
               f"({'conforms' if report.conforms else 'NON-CONFORMING: ' + str(report.errors)})")
     else:
         print(f"croissant_policy not found at {profile_root}; skipping the Croissant document "
-              "(set CPOL_ROOT to dk-croissant-policy-profile)")
+              "(set CPOL_ROOT to ok-croissant-policy-profile)")
     return 0
 
 

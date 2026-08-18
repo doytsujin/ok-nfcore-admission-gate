@@ -130,7 +130,7 @@ Refusals cost more than permits inside the gate process — 146 µs median again
 log and descriptor with a SHA-256 and a record count, so a reader can tell
 whether the corpus they have is the corpus that was described. It also emits
 `dataset/gate-decisions.croissant.json` — the corpus described with the policy
-profile from [dk-croissant-policy-profile](../dk-croissant-policy-profile),
+profile from [ok-croissant-policy-profile](../ok-croissant-policy-profile),
 which is the cheapest available check that the profile survives contact with a
 dataset it was not designed around.
 
