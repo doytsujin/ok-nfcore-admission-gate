@@ -204,8 +204,14 @@ under `toolchain/` so nothing is installed system-wide.
    limits are unread. Everything above is the *Scientific Data* template and may
    not match.
 2. **A persistent repository and DOI.** A data descriptor requires the data
-   deposited with a DOI, which means a Zenodo deposit. Not done; it is an
-   external publication step.
+   deposited with a DOI. **Prepared and ready to upload, not yet deposited** —
+   the only remaining step is external. `DEPOSIT.md` holds the field values and
+   the three files to attach; the archive is built from tag `v1.0.0` and
+   verified file-by-file against `MANIFEST.json`. Deposit by hand: Zenodo's
+   GitHub integration produced no record across five tagged releases of the
+   policy profile repository. Optional first: reserve the DOI in the form, so
+   `citeAs` and `datePublished` can carry it and the Croissant document cites
+   its own record — that has to happen before publishing, not after.
 3. **The RO-Crate profile validator**, which would let the provenance claim be
    stated as validated rather than as conforming in shape. The Croissant half of
    the metadata is already validated; this is the other half.

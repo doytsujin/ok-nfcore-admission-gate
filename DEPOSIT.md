@@ -1,5 +1,13 @@
 # Zenodo deposit sheet — corpus v1.0.0
 
+> **State: ready to upload, nothing deposited yet.** One new record at
+> `zenodo.org/uploads/new` (not a new version of the profile record), three
+> files attached, two DOIs minted. The archive
+> `../nfcore-admission-gate-corpus-v1.0.0.tar.gz` is built from tag `v1.0.0`
+> and passes `bench/verify_manifest.py` at 154/154 files. Open choice before
+> publishing: reserve the DOI first so the Croissant document can cite its own
+> record — see the last section.
+
 Field values for Zenodo's upload form. **Deposit by hand.** Zenodo's GitHub
 integration produced no record across five tagged releases of
 `ok-croissant-policy-profile` on 2026-08-18, including one carrying no
@@ -87,6 +95,16 @@ publication date was stamped UTC (a day ahead of a late-evening deposit in
 Toronto), and the related identifiers were dropped. **Here CC-BY-4.0 is the
 right answer and the other three still are not.** Re-read the published record
 against this sheet; metadata is editable afterwards, files are not.
+
+## The reserved-DOI option
+
+The document validates under mlcroissant 1.1.0 with two warnings, `citeAs` and
+`datePublished`, both recommended rather than required. Both are closable, but
+only before publication: Zenodo can **reserve** the version DOI while the upload
+is still a draft. Reserve it, pass it to `bench/package_corpus.py`'s emit call as
+`cite_as` with `date_published`, regenerate, re-validate, rebuild the archive,
+then attach and publish. Afterwards it would take a new version, because files
+on a published record are frozen.
 
 ## Rebuilding the archive
 
