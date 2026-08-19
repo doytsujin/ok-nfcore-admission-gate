@@ -1,11 +1,11 @@
-# dk-nfcore-admission-gate
+# ok-nfcore-admission-gate
 
 A **prospective admission gate** in front of a **real nf-core pipeline**, with
 **real Workflow Run RO-Crate provenance** and **measured** overhead.
 
 This exists to close one specific gap. The published EMBC 2026 paper
 (*Dataset Descriptors for Autonomous and Observable Biomedical Data Pipelines*,
-`dk-embc2026-paper`) models everything: the descriptor engine is real Python,
+IEEE EMBC 2026, Toronto) models everything: the descriptor engine is real Python,
 but the "Nextflow baseline" it is compared against is a Python file imitating
 Nextflow, and the 3.2% latency overhead comes from cost constants rather than a
 clock. Here nothing is modelled. Nextflow runs, containers run, FASTQ files are
@@ -245,10 +245,14 @@ cost time and will recur:
 
 ## Why it matters beyond this repo
 
-The "designed, not measured" caveat recurs across several manuscripts —
-`dk-electronics-agentic-retrieval-paper` (TKDE), `dk-agentic-twins-paper`,
-`dk-etfa-batch-agentic-paper`, `dk-supervisory-admission-gate-paper`. This is
+The "designed, not measured" caveat recurs across a good deal of the
+descriptor and admission-control literature, including several of our own
+manuscripts in preparation. This is
 the first place where a descriptor-driven refusal happens inside a real,
 third-party, public workflow engine and produces a standards-shaped provenance
 record. The harness is domain-agnostic; only `descriptors/` and the
 process-to-action mapping in `bench/gate.config` are genomics-specific.
+
+## Licence
+
+Apache-2.0. See [LICENSE](LICENSE).

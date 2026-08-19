@@ -103,7 +103,7 @@ def corpus_descriptor(manifest: dict, replication: dict | None) -> dict:
                 "on real nf-core/test-datasets Illumina amplicon reads"
             ),
             "producedBy": "bench/replicate.sh",
-            "custodian": "dk-nfcore-admission-gate",
+            "custodian": "ok-nfcore-admission-gate",
             "retentionDays": 3650,
         },
         "policy": {
@@ -194,7 +194,7 @@ def main() -> int:
 
         doc = emit.emit(
             native,
-            url="https://github.com/doytsujin/dk-nfcore-admission-gate",
+            url="https://github.com/doytsujin/ok-nfcore-admission-gate",
             license="https://spdx.org/licenses/MIT.html",
             decision_record="results/replicates",
         )
