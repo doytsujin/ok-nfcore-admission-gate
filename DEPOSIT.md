@@ -1,19 +1,23 @@
 # Zenodo deposit sheet — corpus v1.0.0
 
-> **State: ready to upload, nothing deposited yet.** One new record at
-> `zenodo.org/uploads/new` (not a new version of the profile record), three
-> files attached, two DOIs minted. The archive
+> **State: DEPOSITED 2026-08-19.** Concept DOI **10.5281/zenodo.22016112**
+> (cite this), version DOI **10.5281/zenodo.22016113** for v1.0.0, at
+> <https://zenodo.org/record/22016113>. Three files attached. The archive
 > `../nfcore-admission-gate-corpus-v1.0.0.tar.gz` is built from tag `v1.0.0`
-> and passes `bench/verify_manifest.py` at 154/154 files. Open choice before
-> publishing: reserve the DOI first so the Croissant document can cite its own
-> record — see the last section.
+> and passes `bench/verify_manifest.py` at 154/154 files.
+>
+> The reserved-DOI route below was taken: the version DOI was reserved on the
+> draft, fed back into the emitted Croissant document as `citeAs` with
+> `datePublished`, and the archive rebuilt before upload. The deposited
+> document therefore cites its own record, and both mlcroissant warnings are
+> closed.
 
-Field values for Zenodo's upload form. **Deposit by hand.** Zenodo's GitHub
-integration produced no record across five tagged releases of
-`ok-croissant-policy-profile` on 2026-08-18, including one carrying no
-`.zenodo.json` at all, so the fault is not in what a repository carries; that
-repository's `RELEASING.md` holds the evidence. The manual upload worked first
-time and is the route here too.
+Field values for the deposit. **Deposit through the REST API**, not the upload
+form: the form's defaults overwrite every field left untouched, and on the
+profile's deposit four of them did. The claim that Zenodo's GitHub integration
+"produced no record" for `ok-croissant-policy-profile` was itself wrong -- it
+produced two, under a concept DOI of their own, which is a different and worse
+failure. That repository's `RELEASING.md` holds the corrected account.
 
 ## What goes on the record
 
@@ -85,7 +89,7 @@ governance, reproducibility
 | Identifier | Relation |
 |---|---|
 | `https://github.com/doytsujin/ok-nfcore-admission-gate/tree/v1.0.0` | is supplement to |
-| `10.5281/zenodo.22005283` | references — the policy profile the descriptors are decided against |
+| `10.5281/zenodo.22018156` | references — the policy profile the descriptors are decided against |
 
 ## Check the record before walking away
 
