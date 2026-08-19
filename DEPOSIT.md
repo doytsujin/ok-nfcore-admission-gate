@@ -71,15 +71,15 @@ below as a related identifier rather than copied in under a data licence.
 >
 > Two claims usually asserted rather than measured are measurable from it. The
 > policy decision has a median cost of 11 microseconds while the subprocess that
-> delivers it costs 30 milliseconds, a separation of nearly four orders of
-> magnitude that only replication made visible. And the refusal is total: the
+> delivers it costs 30 milliseconds, a separation of roughly 2700-fold that only
+> replication made visible. And the refusal is total: the
 > trimming step completed zero times in thirty refusal replicates.
 >
 > Files are listed with SHA-256 and record counts in MANIFEST.json. The Croissant
 > description carries a condition requiring the full set of 30 replicates, so a
 > consumer reusing a subset is refused rather than quietly computing a different
-> interval. Generation and analysis code is in the linked repository under
-> Apache-2.0.
+> interval. The corpus is released under CC BY 4.0. Generation and analysis code
+> is in the linked repository under Apache-2.0.
 
 **Keywords:** admission control, workflow provenance, nextflow, nf-core, data
 governance, reproducibility
@@ -126,3 +126,33 @@ an unexplained extra file on a permanent record is worse than an absent one.
 `bench/verify_manifest.py` re-hashes every file in the archive against
 `MANIFEST.json`; run it before uploading, because the manifest is the record's
 integrity claim and a stale one would be published permanently.
+
+## Two corrections made to the published record, 2026-08-19
+
+Metadata on a published record stays editable, and both of these were caught by
+re-reading the description against the results rather than against itself.
+
+**"nearly four orders of magnitude" was wrong.** 11 µs against a 30.22 ms
+subprocess is **2747×**, which is 3.44 orders. Four orders would be 10,000×, so
+the claim overstated by a factor of about 3.6. It now reads "roughly 2700-fold".
+This is the same failure as the retired 122 µs figure and the "below the
+measurement floor" claim: a real measurement rounded upward into a rhetorical
+shape. Round toward the number, not toward the sentence.
+
+**The description named only Apache-2.0.** That is the licence of the code in the
+repository, not of the archive being downloaded, which is CC BY 4.0. The
+statement was true and was also the only licence a reader would see — which is
+how the profile deposit came to ship a record contradicting the `LICENSE` inside
+its own tarball. The corpus licence is now stated in the description as well as
+in the record's licence field.
+
+## A weakness in the descriptor, not in the deposit
+
+`redistribute` carries `decisionRecords: {min: 210}`, but the corpus holds
+**285**. `bench/package_corpus.py` derives that bound from
+`gatedDecisions.totalRecords` alone, so the refusal arm's 75 records are not
+counted. A consumer holding only the gated arm therefore passes a check whose
+stated rationale is that "a consumer cannot quietly reuse a subset the published
+interval was not computed over." The published descriptor is weaker than its own
+rationale reads. Fix the derivation before any v1.0.1 — the deposited record is
+not wrong, it is just not as strong as it sounds.
