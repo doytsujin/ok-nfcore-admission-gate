@@ -150,6 +150,10 @@ def main() -> int:
         ("gatedDecisions", "results/replicates/decisions_gated_*.jsonl"),
         ("refuseDecisions", "results/replicates/decisions_refuse_*.jsonl"),
         ("descriptors", "descriptors/*.json"),
+        # The run log is provenance rather than measurement, but it is the only
+        # evidence that the arms were interleaved rather than blocked, which is
+        # a claim the paper makes and a reader would otherwise take on trust.
+        ("runLog", "results/replicates/progress.txt"),
     ])
 
     replication_path = ROOT / "results" / "replication.json"
@@ -195,7 +199,9 @@ def main() -> int:
         doc = emit.emit(
             native,
             url="https://github.com/doytsujin/ok-nfcore-admission-gate",
-            license="https://spdx.org/licenses/MIT.html",
+            # The corpus is CC-BY-4.0; the code that made it is Apache-2.0.
+            # The document describes the corpus, so it carries the data licence.
+            license="https://spdx.org/licenses/CC-BY-4.0.html",
             decision_record="results/replicates",
         )
         report = validate.validate(doc)

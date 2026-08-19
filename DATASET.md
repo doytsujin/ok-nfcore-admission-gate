@@ -99,7 +99,7 @@ run; only the trace and the decision log are retained.
 
 ## Data Records
 
-153 files, 220,867 bytes, 285 decision records. Every file is listed in
+154 files, 224,905 bytes, 285 decision records. Every file is listed in
 `dataset/MANIFEST.json` with a SHA-256 and a record count.
 
 | group | files | contents |
@@ -110,6 +110,7 @@ run; only the trace and the decision log are retained.
 | `results/replicates/decisions_gated_NN.jsonl` | 30 | 210 records, all PERMIT |
 | `results/replicates/decisions_refuse_NN.jsonl` | 30 | 75 records: 38 PERMIT, 37 REFUSE |
 | `descriptors/*.json` | 3 | the policies that produced every decision |
+| `results/replicates/progress.txt` | 1 | the run log: one timestamped line per replicate, in the order they ran |
 
 **Trace files** are Nextflow's own tab-separated format: task id, process name,
 status, exit code, `duration` (submit to complete) and `realtime` (the script's

@@ -970,6 +970,19 @@
       "pattern": "runs/replicates/refuse_*_trace.txt",
       "totalBytes": 12466,
       "totalRecords": 75
+    },
+    "runLog": {
+      "entries": [
+        {
+          "bytes": 4038,
+          "path": "results/replicates/progress.txt",
+          "sha256": "6d2bd0f5c2984cd3f071b65890a49c9d1bd3ec9f82f0056e6434ad33a1312bd9"
+        }
+      ],
+      "files": 1,
+      "pattern": "results/replicates/progress.txt",
+      "totalBytes": 4038,
+      "totalRecords": 0
     }
   },
   "pipeline": "nf-core/demo-1.0.1",
@@ -985,8 +998,8 @@
     "refuse": 30
   },
   "totals": {
-    "bytes": 220867,
+    "bytes": 224905,
     "decisionRecords": 285,
-    "files": 153
+    "files": 154
   }
 }

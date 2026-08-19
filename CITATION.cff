@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: "A corpus of prospective admission decisions from a replicated nf-core workflow"
+message: "If you use this corpus, please cite it."
+type: dataset
+authors:
+  - family-names: Chernov
+    given-names: Alexander
+    orcid: "https://orcid.org/0009-0007-3198-2712"
+repository-code: "https://github.com/doytsujin/ok-nfcore-admission-gate"
+abstract: >-
+  Thirty interleaved replicates of three arms of nf-core/demo v1.0.1 under
+  Nextflow 24.10.5 and rootless podman, with a prospective admission gate wired
+  into the engine so that a refused task never starts: an ungated baseline, a
+  gated arm in which every task is admitted, and a refusal arm in which a
+  declared condition is violated. 90 execution traces and 285 decision records,
+  each carrying the verdict, the descriptor version, the refusal class where
+  applicable, and every condition evaluated with its expected value, observed
+  value and outcome — including conditions that passed on a refused request.
+  The decision costs 11 microseconds at the median; the subprocess that delivers
+  it costs 30 milliseconds. The refused step completed zero times in thirty
+  replicates.
+keywords:
+  - admission control
+  - workflow provenance
+  - nextflow
+  - nf-core
+  - data governance
+  - reproducibility
+license: CC-BY-4.0
+version: 1.0.0
+date-released: 2026-08-18

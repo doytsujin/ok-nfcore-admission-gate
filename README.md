@@ -255,4 +255,12 @@ process-to-action mapping in `bench/gate.config` are genomics-specific.
 
 ## Licence
 
-Apache-2.0. See [LICENSE](LICENSE).
+**Code is Apache-2.0** — `gate/`, `bench/`, `wrapper/`, and everything else that
+runs. See [LICENSE](LICENSE).
+
+**The corpus is CC-BY-4.0** — `dataset/`, `runs/`, `descriptors/`: the traces,
+the decision records, the descriptors they were decided against, and the
+manifest and Croissant document that describe them. Data descriptor venues
+require the data under CC-BY or CC0, and a deposit cannot advertise one licence
+over an archive whose contents carry another. The two are therefore stated
+separately rather than one being stretched to cover both.

@@ -45,7 +45,7 @@
     "source": "cr:source",
     "subField": "cr:subField",
     "transform": "cr:transform",
-    "cpol": "https://example.invalid/croissant-policy/0.1.0/",
+    "cpol": "https://w3id.org/croissant-policy/0.1.0/",
     "cpol:expected": {
       "@id": "cpol:expected",
       "@type": "@json"
@@ -56,11 +56,11 @@
   "description": "admission_decision_records described as a policy-bearing Croissant dataset. State: REPLICATED. Source: 30 interleaved replicates of three arms (baseline, gated, refuse) of nf-core/demo v1.0.1 under a prospective admission gate, on real nf-core/test-datasets Illumina amplicon reads.",
   "conformsTo": [
     "http://mlcommons.org/croissant/1.0",
-    "https://example.invalid/croissant-policy/0.1.0"
+    "https://w3id.org/croissant-policy/0.1.0"
   ],
   "version": "1.0.0",
   "url": "https://github.com/doytsujin/ok-nfcore-admission-gate",
-  "license": "https://spdx.org/licenses/MIT.html",
+  "license": "https://spdx.org/licenses/CC-BY-4.0.html",
   "creator": {
     "@type": "sc:Organization",
     "name": "ok-nfcore-admission-gate"
