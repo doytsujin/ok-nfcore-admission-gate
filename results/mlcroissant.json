@@ -9,18 +9,13 @@
   "croissantVersion": "1.0",
   "documents": [
     {
-      "absl": [
-        "Found the following 2 warning(s) during the validation:\n  -  [Metadata(gate-decisions)] Property \"http://mlcommons.org/croissant/citeAs\" is recommended, but does not exist.\n  -  [Metadata(gate-decisions)] Property \"https://schema.org/datePublished\" is recommended, but does not exist."
-      ],
+      "absl": [],
       "contextReportedNonStandard": false,
       "errors": [],
       "loaded": true,
       "name": "gate-decisions",
-      "path": "../ok-nfcore-admission-gate/dataset/gate-decisions.croissant.json",
-      "warnings": [
-        "[Metadata(gate-decisions)] Property \"http://mlcommons.org/croissant/citeAs\" is recommended, but does not exist.",
-        "[Metadata(gate-decisions)] Property \"https://schema.org/datePublished\" is recommended, but does not exist."
-      ]
+      "path": "dataset/gate-decisions.croissant.json",
+      "warnings": []
     }
   ],
   "mlcroissantVersion": "unknown"

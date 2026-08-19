@@ -140,6 +140,14 @@ def corpus_descriptor(manifest: dict, replication: dict | None) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=ROOT / "dataset")
+    # Zenodo reserves a version DOI while the upload is still a draft. Passing it
+    # here is what closes mlcroissant's `citeAs` and `datePublished` warnings, and
+    # it can only be done before publication: files on a published record are
+    # frozen, so a document that does not cite its own record never will.
+    ap.add_argument("--cite-as", default=None,
+                    help="reserved DOI, e.g. 10.5281/zenodo.22016113")
+    ap.add_argument("--date-published", default=None,
+                    help="ISO date for the deposit, e.g. 2026-08-18")
     args = ap.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
 
@@ -202,6 +210,8 @@ def main() -> int:
             # The corpus is CC-BY-4.0; the code that made it is Apache-2.0.
             # The document describes the corpus, so it carries the data licence.
             license="https://spdx.org/licenses/CC-BY-4.0.html",
+            cite_as=args.cite_as,
+            date_published=args.date_published,
             decision_record="results/replicates",
         )
         report = validate.validate(doc)

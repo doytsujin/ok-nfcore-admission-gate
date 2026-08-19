@@ -61,6 +61,8 @@
   "version": "1.0.0",
   "url": "https://github.com/doytsujin/ok-nfcore-admission-gate",
   "license": "https://spdx.org/licenses/CC-BY-4.0.html",
+  "citeAs": "10.5281/zenodo.22016113",
+  "datePublished": "2026-08-18",
   "creator": {
     "@type": "sc:Organization",
     "name": "ok-nfcore-admission-gate"
@@ -100,7 +102,7 @@
       "name": "replicates",
       "description": "Decision records emitted by the gate for this dataset.",
       "encodingFormat": "application/jsonl",
-      "includes": "results/replicates/*.jsonl"
+      "includes": "replicates/*.jsonl"
     }
   ],
   "cpol:policy": {
