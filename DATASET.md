@@ -33,7 +33,7 @@ The corpus supports two kinds of claim that are usually asserted rather than
 measured: what an inline governance decision costs in a real engine, and
 whether a refusal actually prevents execution. On the first, the decision itself
 has a median cost of 11 µs and the process that delivers it 30 ms, a separation
-of nearly four orders of magnitude that only replication made visible. On the
+of roughly 2700-fold that only replication made visible. On the
 second, the trimming step completed zero times in thirty refusal replicates.
 
 ## Background & Summary
