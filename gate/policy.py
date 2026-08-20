@@ -36,6 +36,33 @@ def _as_number(value):
         return None
 
 
+def _json_equal(a, b) -> bool:
+    """Equality between two JSON values.
+
+    Python's `==` is not it, and the difference admits requests. `bool` is a
+    subclass of `int`, so `True == 1` and `False == 0` are both true, and a
+    policy written `{"equals": true}` would be satisfied by an observed `1`.
+    In JSON those are values of different types and are not equal. A gate that
+    conflates them admits a request its author did not write, which is the one
+    failure mode this evaluator exists to prevent.
+
+    Numbers compare by numeric value, so `1` and `1.0` are equal -- JSON has a
+    single number type and the distinction is an artifact of the parser.
+    Everything else compares structurally.
+    """
+    if isinstance(a, bool) or isinstance(b, bool):
+        return isinstance(a, bool) and isinstance(b, bool) and a == b
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        return float(a) == float(b)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(_json_equal(x, y) for x, y in zip(a, b))
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(_json_equal(a[k], b[k]) for k in a)
+    if type(a) is not type(b):
+        return False
+    return a == b
+
+
 def _check(name: str, spec, observed) -> ConditionResult:
     """Evaluate one condition.
 
@@ -47,7 +74,7 @@ def _check(name: str, spec, observed) -> ConditionResult:
       "key": {"present": true} observed is not None
     """
     if not isinstance(spec, dict):
-        return ConditionResult(name, "equals", spec, observed, observed == spec)
+        return ConditionResult(name, "equals", spec, observed, _json_equal(observed, spec))
 
     if "min" in spec:
         lhs, rhs = _as_number(observed), _as_number(spec["min"])
@@ -60,12 +87,17 @@ def _check(name: str, spec, observed) -> ConditionResult:
         return ConditionResult(name, "<=", spec["max"], observed, ok)
 
     if "in" in spec:
+        # Membership in a JSON array, under the same equality as `equals`.
+        # `observed in allowed` would use Python's, and `True in [1]` is true.
         allowed = spec["in"]
-        return ConditionResult(name, "in", allowed, observed, observed in allowed)
+        member = isinstance(allowed, (list, tuple)) and any(
+            _json_equal(observed, candidate) for candidate in allowed
+        )
+        return ConditionResult(name, "in", allowed, observed, member)
 
     if "equals" in spec:
         return ConditionResult(
-            name, "==", spec["equals"], observed, observed == spec["equals"]
+            name, "==", spec["equals"], observed, _json_equal(observed, spec["equals"])
         )
 
     if "present" in spec:
