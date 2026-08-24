@@ -17,3 +17,15 @@ pipeline-nfcore-demo/
 __pycache__/
 *.pyc
 .nextflow*
+
+# The AWS arm keeps its evidence and drops its scratch. Same rule as runs/:
+# children are excluded individually so the negations below can re-include.
+# e1_local_control.json is the calibration of the probes and is evidence;
+# the zips are regenerable packaging and the *_probe.out files are copies of
+# what the JSON already records.
+aws/results/*
+!aws/results/e1_local_control.json
+!aws/results/e1_probe.json
+!aws/results/e3_runs.jsonl
+!aws/results/e3_granularity.json
+!aws/results/e3_meta.json

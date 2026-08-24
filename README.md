@@ -215,6 +215,34 @@ cost time and will recur:
    `bench/run.sh` puts work under `$HOME/.nfgate-work` by default; override
    with `NFGATE_WORK`.
 
+## The AWS HealthOmics arm
+
+[`aws/`](aws/) ports this gate to a **managed** workflow service, to test the
+one thing the local artifact cannot: whether the per-task enforcement point it
+depends on exists off this machine.
+
+`process.beforeScript` appears on AWS's own list of Nextflow directives that
+HealthOmics does not support
+([`HealthOmicsNFUtils.groovy`](https://github.com/awslabs/linter-rules-for-nextflow/blob/main/linter-rules/src/main/groovy/software/amazon/nextflow/rules/utils/HealthOmicsNFUtils.groovy)).
+If that holds, the gate cannot sit where it sits here, and the only enforcement
+point left is in front of `omics:StartRun` — one level up and one granularity
+coarser, refusing whole runs rather than tasks.
+
+That list was last edited **2024-02-21**, and the current HealthOmics
+documentation contradicts it for `scratch`. So it is treated as a hypothesis
+and tested against the running service. See [`aws/EXPERIMENTS.md`](aws/EXPERIMENTS.md)
+for the protocol and for what would refute each claim — including the outcome
+where per-task enforcement turns out to work on HealthOmics and this section is
+wrong.
+
+**Status: the harness is written and the probes are calibrated; the AWS runs
+have not happened.** `aws/bench/local_control.sh` runs both probes under this
+repository's Nextflow, where `beforeScript` is honoured and a non-zero exit
+stops the task, and it passes — so a negative result on HealthOmics would be
+attributable to the service rather than to a broken probe. The runs themselves
+need AWS credentials this machine does not have. Estimated cost of the whole
+arm at 30 replicates: about **$2.30**.
+
 ## Honest limits
 
 - ~~**n = 1 per arm.**~~ Closed: 30 replicates per arm, interleaved and paired.
@@ -239,6 +267,11 @@ cost time and will recur:
 - **The descriptors gate public test data.** Conditions have the shape of a
   regulated descriptor applied to data carrying no actual restriction, so that
   anyone can run this.
+- **The AWS arm is unrun.** [`aws/`](aws/) is a complete harness with a
+  calibrated positive control and nothing measured on AWS. Its claim about
+  HealthOmics currently rests on a linter list AWS last edited in February 2024,
+  which is demonstrably stale for at least one other directive. Until
+  `aws/results/e1_probe.json` exists, that claim is cited, not measured.
 - **No GA4GH endpoint is involved.** The crate conforms to the Workflow Run
   Crate profile shape but has not been validated against a profile validator,
   and nothing here speaks DRS, TES or WES.

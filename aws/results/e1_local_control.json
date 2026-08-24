@@ -1,0 +1,17 @@
+{
+  "what": "positive control for the HealthOmics beforeScript probes",
+  "engine": "Nextflow 24.10.5 (local, podman-less: the probes declare no container)",
+  "date": "2026-08-24",
+  "e1a_observe": {
+    "nextflowExit": 0,
+    "verdict": "EXECUTED",
+    "expected": "EXECUTED"
+  },
+  "e1b_enforce": {
+    "nextflowExit": 1,
+    "verdict": "TASK_STOPPED",
+    "expected": "TASK_STOPPED"
+  },
+  "calibrated": true,
+  "reading": "With both expectations met, a DROPPED or COMPLETED result on AWS HealthOmics is attributable to the service rather than to the probe."
+}

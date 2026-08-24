@@ -1,0 +1,36 @@
+{
+  "_comment": [
+    "What the HealthOmics run itself may touch. Read inputs, write outputs,",
+    "pull containers, write its own logs -- and nothing else. In particular it",
+    "cannot call StartRun, so a task cannot launch an ungated run."
+  ],
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadInputsWriteOutputs",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:ListBucket", "s3:PutObject"],
+      "Resource": [
+        "arn:aws:s3:::RUN_BUCKET",
+        "arn:aws:s3:::RUN_BUCKET/*"
+      ]
+    },
+    {
+      "Sid": "PullTaskContainers",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchCheckLayerAvailability"
+      ],
+      "Resource": "arn:aws:ecr:REGION:ACCOUNT_ID:repository/nfgate/*"
+    },
+    { "Sid": "EcrAuth", "Effect": "Allow", "Action": "ecr:GetAuthorizationToken", "Resource": "*" },
+    {
+      "Sid": "RunLogs",
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"],
+      "Resource": "arn:aws:logs:REGION:ACCOUNT_ID:log-group:/aws/omics/WorkflowLog:*"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "TheOnlyPrincipalAllowedToStartRuns",
+      "Effect": "Allow",
+      "Action": ["omics:StartRun", "omics:GetRun", "omics:ListRuns"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "PassTheRunRoleToHealthOmics",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::ACCOUNT_ID:role/nfgate-omics-run-role",
+      "Condition": {
+        "StringEquals": { "iam:PassedToService": "omics.amazonaws.com" }
+      }
+    },
+    {
+      "Sid": "WriteDecisionRecordsOnly",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::DECISION_BUCKET/decisions/*"
+    }
+  ]
+}
