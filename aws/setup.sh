@@ -8,7 +8,7 @@
 # Prints every resource it made so teardown.sh can undo exactly those.
 set -euo pipefail
 
-BUCKET=""; DECISION_BUCKET=""; E1_ONLY=0
+BUCKET=""; DECISION_BUCKET=""; E1_ONLY=0; SKIP_ECR=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --bucket) BUCKET="$2"; shift 2 ;;
@@ -17,6 +17,9 @@ while [ $# -gt 0 ]; do
     # no container, so the ECR mirror (gigabytes, needs a docker daemon) and
     # the gate Lambda are both dead weight until E1 has returned an answer.
     --e1-only) E1_ONLY=1; shift ;;
+    # The gate Lambda needs no container images. E2 tests the enforcement
+    # point, not the pipeline, so mirroring gigabytes for it is waste.
+    --skip-ecr) SKIP_ECR=1; shift ;;
     *) echo "unknown arg $1" >&2; exit 2 ;;
   esac
 done
@@ -125,6 +128,9 @@ fi
 # local arm runs its containers under rootless podman, so mirroring with the
 # same engine means the images pushed to ECR are the ones the measured runs
 # actually used. Override with NFGATE_CONTAINER_CMD if you want otherwise.
+if [ "$SKIP_ECR" = "1" ]; then
+  echo "== --skip-ecr: not mirroring containers =="
+else
 CTR="${NFGATE_CONTAINER_CMD:-}"
 if [ -z "$CTR" ]; then
   if command -v podman >/dev/null 2>&1; then CTR=podman
@@ -161,6 +167,7 @@ while read -r src repo; do
   "$CTR" tag "docker.io/$src" "$ECR_BASE/$repo:$tag"
   "$CTR" push --quiet "$ECR_BASE/$repo:$tag"
 done < "$ROOT/aws/workflows/demo/containers.txt"
+fi
 
 # --- gate lambda ------------------------------------------------------------
 echo "== packaging the gate lambda =="

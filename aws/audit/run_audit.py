@@ -111,7 +111,9 @@ def run_aws(probe: P.Probe, args) -> dict:
     slug = d.name
     zip_path = RESULTS / f"audit-{slug}.zip"
     zip_path.write_bytes(package(d))
-    name = f"nfgate-audit-{slug.lower().replace('_','-')}"[:60]
+    import uuid
+    suffix = uuid.uuid4().hex[:6]
+    name = f"nfgate-audit-{slug.lower().replace('_','-')}-{suffix}"[:60]
 
     try:
         wf = aws("omics", "create-workflow", "--name", name, "--engine", "NEXTFLOW",
@@ -135,7 +137,7 @@ def run_aws(probe: P.Probe, args) -> dict:
     params = RESULTS / f"_audit_params_{slug}.json"
     params.write_text(json.dumps({"image": args.image}))
     run = aws("omics", "start-run", "--workflow-id", wid, "--role-arn", args.role_arn,
-              "--output-uri", f"s3://{args.bucket}/{args.prefix}/{slug}",
+              "--output-uri", f"s3://{args.bucket}/{args.prefix}/{slug}-{suffix}",
               "--name", name, "--parameters", f"file://{params}",
               region=args.region, profile=args.profile)
     rid = run["id"]
@@ -146,7 +148,7 @@ def run_aws(probe: P.Probe, args) -> dict:
             break
         time.sleep(15)
 
-    base = f"s3://{args.bucket}/{args.prefix}/{slug}/{rid}"
+    base = f"s3://{args.bucket}/{args.prefix}/{slug}-{suffix}/{rid}"
     w = {}
     try:
         listing = aws("s3", "ls", base + "/", "--recursive",
@@ -231,6 +233,15 @@ def _overlap(run_id: str, args) -> tuple[str, str]:
            ("unknown", f"only {len(spans)} task(s); cannot judge")
 
 
+def _labelled(probe, rep: int, args) -> dict:
+    """Run one probe, tagging the row when it is one of several replicates."""
+    row = run_aws(probe, args)
+    if args.repeat > 1:
+        row["replicate"] = rep + 1
+        row["probe"] = f"{probe.name}#{rep + 1}"
+    return row
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--local", action="store_true")
@@ -240,6 +251,10 @@ def main() -> int:
     ap.add_argument("--region", default=os.environ.get("AWS_REGION", "us-east-1"))
     ap.add_argument("--profile", default=os.environ.get("AWS_PROFILE"))
     ap.add_argument("--only", default="", help="comma-separated probe names")
+    ap.add_argument("--repeat", type=int, default=1,
+                    help="replicates per probe. The NOT_SUPPORTED verdicts are "
+                         "where a transient failure masquerades as agreement "
+                         "with the vendor, so those are the ones worth repeating.")
     ap.add_argument("--jobs", type=int, default=5,
                     help="concurrent runs; StartRun is quota-limited to 5 TPS")
     args = ap.parse_args()
@@ -261,8 +276,12 @@ def main() -> int:
         if not (args.bucket and args.role_arn and args.image):
             print("--confirm needs --bucket --role-arn --image", file=sys.stderr)
             return 2
+        jobs = []
+        for rep in range(args.repeat):
+            for pr in pilot:
+                jobs.append((pr, rep))
         with cf.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-            rows = list(ex.map(lambda p: run_aws(p, args), pilot))
+            rows = list(ex.map(lambda j: _labelled(j[0], j[1], args), jobs))
         out = RESULTS / "audit_healthomics.json"
     else:
         for p in pilot:

@@ -31,6 +31,8 @@ aws/results/*
 !aws/results/e1c_local_control.md
 !aws/results/gate_real.json
 !aws/results/gate_real_evidence.md
+!aws/results/trust_boundary.json
+!aws/results/trust_boundary_evidence.md
 !aws/results/e3_runs.jsonl
 !aws/results/e3_granularity.json
 !aws/results/e3_meta.json
