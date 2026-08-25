@@ -64,6 +64,45 @@ produced a wrong finding rather than an obvious failure. A paper reporting
 someone else's error rate while concealing its own near-misses is making the
 same move it criticises, and a reviewer who notices that is right to reject it.
 
+## The special issues, checked 2026-08-25
+
+Three of the open calls looked plausible. Two are already closed.
+
+| Call | Deadline | Status |
+|---|---|---|
+| Engineering Agentic Systems | **5 Jan 2026** | **closed** |
+| The Edge–Cloud Continuum | **17 Jul 2026** | **closed** |
+| **Building Trustworthy Software in the Time of AI** | **5 Nov 2026** | **open — 72 days** |
+
+The agentic and edge–cloud issues were the two whose *titles* fit best, and
+both sailed months ago. That is worth noting rather than glossing: a venue
+search that reads titles and not dates produces a plan that cannot be executed.
+
+**Two routes remain, and they are genuinely different papers.**
+
+**A. Regular submission, no deadline.** The audit exactly as measured. IEEE
+Software takes rolling submissions and the result needs no theme to justify it.
+Lowest risk, no reframing, and the three actionable insights are already
+written.
+
+**B. The Trustworthy Software special issue, 5 November.** Requires a frame the
+audit does not currently have: *you cannot assure an autonomous system's
+guardrails from the platform's documentation.* That is a real argument and this
+programme is unusually well placed to make it — the admission gate supplies the
+guardrail, and the audit supplies the measurement that its enforcement surface
+was described wrongly by the vendor 7 times in 8.
+
+The special issue asks for "practical, evidence-based approaches" to
+reliability and safety across the lifecycle, which this is. The risk is that
+the issue is about **AI-enabled** software and the audit is not; the framing has
+to carry that, and if it feels forced to write, it will read forced to a
+reviewer.
+
+**Recommendation: A, unless the trustworthy framing is one you actually
+believe.** B is worth more if it lands, and 72 days is comfortable, but a paper
+bent to fit a theme reads like a paper bent to fit a theme. Send the abstract
+to the EiC and let that decide it — the same email settles both questions.
+
 ## Order of work
 
 1. Email the abstract to the EiC. One day, and it settles fit before drafting.
