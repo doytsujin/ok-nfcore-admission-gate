@@ -21,7 +21,7 @@ purpose, last edited **2024-02-21**.
 | `stageInMode` | unsupported | SUPPORTED | **false** | control: default stages a symlink |
 | `storeDir` | unsupported | SUPPORTED | **false** | output appears only under storeDir |
 | `maxForks` | unsupported | SUPPORTED | **false** | control: tasks overlap without it |
-| `containerOptions` | unsupported | NOT_SUPPORTED | **correct** | — |
+| `containerOptions` | unsupported | NOT_SUPPORTED | **correct** | **replicated 3×, unanimous** |
 | `errorStrategy` | *not on the list* | SUPPORTED | *positive control passed* | — |
 
 ## Not counted, and why
@@ -78,10 +78,14 @@ And the consequence that travels past genomics:
 
 - Nothing about the 15 entries not decided here.
 - No general claim about AWS documentation quality. One list, one service.
-- **n = 1 per directive.** These are binary behaviours rather than
-  measurements with variance, but a transient failure would read as a
-  confirmation. The single `NOT_SUPPORTED` verdict — `containerOptions` — is
-  the one where that risk matters and it has not been repeated.
+- **n = 1 for the seven SUPPORTED verdicts.** These are binary behaviours
+  rather than measurements with variance, and a SUPPORTED verdict cannot be a
+  transient failure — the directive either took effect or it did not.
+- ~~The `NOT_SUPPORTED` verdict is unreplicated.~~ **Closed 2026-08-25.**
+  `containerOptions` was repeated three further times and returned
+  `NOT_SUPPORTED` on every trial (n = 4, unanimous). That was the one verdict
+  where a transient failure would have masqueraded as agreement with the
+  vendor, which is why it is the one that was repeated.
 
 ## Probe defects caught by calibration rather than reported as findings
 

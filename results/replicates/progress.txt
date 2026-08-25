@@ -1,2 +1,15 @@
 == replication: 30 x [baseline gated resident] ==
 2026-08-25T00:03:09-04:00 baseline_01 tasks=7
+2026-08-25T00:03:40-04:00 gated_01 tasks=7
+2026-08-25T00:04:12-04:00 resident_01 tasks=7
+2026-08-25T00:04:43-04:00 baseline_02 tasks=7
+2026-08-25T00:05:15-04:00 gated_02 tasks=7
+2026-08-25T00:05:46-04:00 resident_02 tasks=7
+2026-08-25T00:06:17-04:00 baseline_03 tasks=7
+2026-08-25T00:06:48-04:00 gated_03 tasks=7
+2026-08-25T00:07:20-04:00 resident_03 tasks=7
+2026-08-25T00:07:51-04:00 baseline_04 tasks=7
+2026-08-25T00:08:22-04:00 gated_04 tasks=7
+2026-08-25T00:08:53-04:00 resident_04 tasks=7
+2026-08-25T00:09:25-04:00 baseline_05 tasks=7
+2026-08-25T00:09:57-04:00 gated_05 tasks=7
