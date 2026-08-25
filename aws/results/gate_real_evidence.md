@@ -1,6 +1,6 @@
 # The gate, per task, on AWS HealthOmics
 
-Run 2026-08-24, account `426674444486`, `us-east-1`, engine Nextflow 25.10.0,
+Run 2026-08-24, account `AWS_ACCOUNT`, `us-east-1`, engine Nextflow 25.10.0,
 image `nfgate/probe:py312-slim` (Debian 13). Workflow `nfgate-gate-real`.
 
 `gate/` and `descriptors/` were copied byte-identically from this repository

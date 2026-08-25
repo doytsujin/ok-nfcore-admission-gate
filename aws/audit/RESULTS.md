@@ -1,6 +1,6 @@
 # Audit results
 
-AWS HealthOmics, account `426674444486`, `us-east-1`, engine **Nextflow
+AWS HealthOmics, account `AWS_ACCOUNT`, `us-east-1`, engine **Nextflow
 25.10.0**, image `nfgate/probe:py312-slim`. Measured 2026-08-24.
 
 The claim under audit is AWS's own

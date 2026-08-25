@@ -1,6 +1,6 @@
 {
   "region": "us-east-1",
-  "outputUri": "s3://nfgate-426674444486-us-east-1/nfgate/e1",
+  "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1",
   "pricesAndRulesReadOn": "2026-08-24",
   "e1a_observe": {
     "outcome": "ACCEPTED",
@@ -15,7 +15,7 @@
     "workflowId": "1626894",
     "runId": "9958245",
     "runStatus": "FAILED",
-    "statusMessage": "Run failed due to task: PROBE_ENFORCE, id: 7241923, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:426674444486:log-group:/aws/omics/WorkflowLog:log-stream:run/9958245/task/7241923 to debug the failure."
+    "statusMessage": "Run failed due to task: PROBE_ENFORCE, id: 7241923, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/9958245/task/7241923 to debug the failure."
   },
   "verdict": {
     "beforeScript": "HONOURED",

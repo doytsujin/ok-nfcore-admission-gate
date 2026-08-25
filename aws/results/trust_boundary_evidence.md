@@ -1,6 +1,6 @@
 # E2 — who does the gate protect?
 
-Run 2026-08-24, account `426674444486`, `us-east-1`. Test role
+Run 2026-08-24, account `AWS_ACCOUNT`, `us-east-1`. Test role
 `nfgate-caller-test`, assumed rather than applied to the calling user, so a
 Deny could not lock the account out of HealthOmics.
 

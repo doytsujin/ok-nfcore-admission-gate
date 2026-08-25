@@ -12,7 +12,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROFILE="${AWS_PROFILE:-nfgate}"
 REGION="${AWS_REGION:-us-east-1}"
-BUCKET="${NFGATE_BUCKET:-nfgate-426674444486-us-east-1}"
+BUCKET="${NFGATE_BUCKET:-nfgate-AWS_ACCOUNT-us-east-1}"
 DEST="$ROOT/aws/results/archive"
 AWSC=(aws --profile "$PROFILE" --region "$REGION")
 

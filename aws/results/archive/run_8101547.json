@@ -1,0 +1,36 @@
+{
+    "arn": "arn:aws:omics:us-east-1:AWS_ACCOUNT:run/8101547",
+    "id": "8101547",
+    "engineVersion": "25.10.0",
+    "status": "FAILED",
+    "workflowId": "4353359",
+    "workflowType": "PRIVATE",
+    "roleArn": "arn:aws:iam::AWS_ACCOUNT:role/nfgate-omics-run-role",
+    "name": "nfgate-gate-real-refuse",
+    "digest": "sha256:7e7685ab910ce1767f180288ff0f3e73c843b4f11559ee2c4e0ba688b8ee0190",
+    "parameters": {
+        "runLabel": "refuse",
+        "minReadLength": 10,
+        "image": "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim"
+    },
+    "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/gate-real/refuse",
+    "resourceDigests": {
+        "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim": "sha256:0ad57fb94a9a64b0c83db89988f65e226ee529cbdca8fda6605632d644ad9fbc"
+    },
+    "startedBy": "arn:aws:iam::AWS_ACCOUNT:user/u889ser",
+    "creationTime": "2026-08-25T02:20:50.230760+00:00",
+    "startTime": "2026-08-25T02:21:17+00:00",
+    "stopTime": "2026-08-25T02:26:37.553530+00:00",
+    "statusMessage": "Run failed due to task: GATED_TRIM, id: 2899234, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/8101547/task/2899234 to debug the failure.",
+    "tags": {},
+    "failureReason": "RUN_TASK_FAILED",
+    "logLocation": {
+        "engineLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/8101547/engine",
+        "runLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/8101547"
+    },
+    "uuid": "94d01b5c-3461-1da7-4ac2-43ecdf75a528",
+    "runOutputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/gate-real/refuse/8101547",
+    "storageType": "DYNAMIC",
+    "workflowOwnerId": "AWS_ACCOUNT",
+    "workflowUuid": "5cd01b59-2fbb-1054-b09e-1c4de2a8703b"
+}

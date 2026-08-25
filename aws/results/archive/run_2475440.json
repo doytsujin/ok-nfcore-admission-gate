@@ -1,0 +1,26 @@
+{
+    "arn": "arn:aws:omics:us-east-1:AWS_ACCOUNT:run/2475440",
+    "id": "2475440",
+    "engineVersion": "25.10.0",
+    "status": "COMPLETED",
+    "workflowId": "4700382",
+    "workflowType": "PRIVATE",
+    "roleArn": "arn:aws:iam::AWS_ACCOUNT:role/nfgate-omics-run-role",
+    "name": "trust-approved",
+    "digest": "sha256:6c6d352818e192a9c17b11fbe443b869d26c1d2591bfe8b231c018c67b50ce56",
+    "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/trust",
+    "startedBy": "arn:aws:sts::AWS_ACCOUNT:assumed-role/nfgate-caller-test/nfgate-trust-test",
+    "creationTime": "2026-08-25T03:56:56.317240+00:00",
+    "startTime": "2026-08-25T03:57:14+00:00",
+    "stopTime": "2026-08-25T04:01:57.630460+00:00",
+    "tags": {},
+    "logLocation": {
+        "engineLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/2475440/engine",
+        "runLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/2475440"
+    },
+    "uuid": "8ad01b88-3248-4809-6d87-7f6a3b8fc633",
+    "runOutputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/trust/2475440",
+    "storageType": "DYNAMIC",
+    "workflowOwnerId": "AWS_ACCOUNT",
+    "workflowUuid": "76d01b47-9b79-c19e-c6a7-ec07656f0215"
+}

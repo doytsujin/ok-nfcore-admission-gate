@@ -13,7 +13,7 @@ CONFIRM=0
 
 PROFILE="${AWS_PROFILE:-nfgate}"
 REGION="${AWS_REGION:-us-east-1}"
-BUCKET="${NFGATE_BUCKET:-nfgate-426674444486-us-east-1}"
+BUCKET="${NFGATE_BUCKET:-nfgate-AWS_ACCOUNT-us-east-1}"
 DBUCKET="${BUCKET}-decisions"
 AWSC=(aws --profile "$PROFILE" --region "$REGION")
 

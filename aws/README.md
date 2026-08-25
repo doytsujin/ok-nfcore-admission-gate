@@ -9,14 +9,30 @@ question with a measurement instead of a design document:
 `EXPERIMENTS.md` is the protocol, including what would refute each claim.
 This file is how to run it.
 
+## A note on this repository being public
+
+The account identifier has been redacted to `AWS_ACCOUNT` throughout, including
+in the archived evidence. It was never a credential — an AWS account ID is an
+identifier, not a secret — but publishing one helps an attacker aim at
+enumeration, and there is no reason for it to be here. Run ids, timestamps, log
+contents and verdicts are untouched, so nothing that supports a claim was lost.
+
+No credentials, keys or internal hostnames are or were present. What is public
+is what should be: the harness, the probes, the raw results and the papers'
+evidence.
+
 ## The account has been torn down
 
 Everything this arm created in AWS was deleted on 2026-08-25: runs, workflows,
 the ECR repository, the gate Lambda, three IAM roles and both buckets. The
 account is clean and is costing nothing.
 
-**The evidence survived the teardown.** `aws/archive_evidence.sh` pulled 52
-files (212 KB) into `aws/results/archive/` first — run and task metadata, the
+**The evidence survived the teardown**, and very nearly did not.
+`aws/archive_evidence.sh` pulled 52 files (212 KB) into `aws/results/archive/`
+before the deletion — but `.gitignore` excluded `aws/results/*`, so for a few
+hours the archive existed on one local disk and nowhere else while the account
+that produced it was already gone. It is tracked now. The whole point of
+archiving before teardown is defeated by not committing the archive — run and task metadata, the
 CloudWatch task logs carrying the refusal lines, and every published text
 artefact. Deleting the account without that would have left the papers'
 central claims unverifiable by anyone, including us.
@@ -57,7 +73,7 @@ Evidence: [`results/gate_real_evidence.md`](results/gate_real_evidence.md).
 Per-task admission control is available on the managed service. The claim this
 arm was built to test does not hold.
 
-Account `426674444486`, `us-east-1`, HealthOmics engine **Nextflow 25.10.0**.
+Account `AWS_ACCOUNT`, `us-east-1`, HealthOmics engine **Nextflow 25.10.0**.
 Full evidence in [`results/e1_evidence.md`](results/e1_evidence.md).
 
 - **E1a** — `CreateWorkflow` accepted a definition containing `beforeScript`;

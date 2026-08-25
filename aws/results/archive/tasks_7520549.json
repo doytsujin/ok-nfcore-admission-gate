@@ -1,0 +1,16 @@
+{
+    "items": [
+        {
+            "taskId": "5891431",
+            "status": "COMPLETED",
+            "name": "PROBE_OBSERVE",
+            "cpus": 2,
+            "memory": 4,
+            "creationTime": "2026-08-25T01:36:36.975228+00:00",
+            "startTime": "2026-08-25T01:38:17.983000+00:00",
+            "stopTime": "2026-08-25T01:38:32.678000+00:00",
+            "gpus": 0,
+            "instanceType": "omics.c.large"
+        }
+    ]
+}

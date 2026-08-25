@@ -20,7 +20,7 @@ python3=/usr/bin/python3
 python3_version=Python 3.12.13
 bin_on_path=none
 bin_runs=no
-cwd=/home/chelex/.nfgate-work/e1c-control/work/64/b22c72e12a0ff404b8ea99b2cbeda0
+cwd=$HOME/.nfgate-work/e1c-control/work/64/b22c72e12a0ff404b8ea99b2cbeda0
 uname=Linux capistrano ... x86_64 GNU/Linux
 ```
 

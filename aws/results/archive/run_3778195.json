@@ -1,0 +1,32 @@
+{
+    "arn": "arn:aws:omics:us-east-1:AWS_ACCOUNT:run/3778195",
+    "id": "3778195",
+    "engineVersion": "25.10.0",
+    "status": "COMPLETED",
+    "workflowId": "7054838",
+    "workflowType": "PRIVATE",
+    "roleArn": "arn:aws:iam::AWS_ACCOUNT:role/nfgate-omics-run-role",
+    "name": "nfgate-probe-c-observe",
+    "digest": "sha256:c5b6415f697d39c68e7ad45c9ab8c74083fb35a42fffb8b4409c368ad5e0d0c7",
+    "parameters": {
+        "image": "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim"
+    },
+    "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1c",
+    "resourceDigests": {
+        "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim": "sha256:0ad57fb94a9a64b0c83db89988f65e226ee529cbdca8fda6605632d644ad9fbc"
+    },
+    "startedBy": "arn:aws:iam::AWS_ACCOUNT:user/u889ser",
+    "creationTime": "2026-08-25T01:59:06.334130+00:00",
+    "startTime": "2026-08-25T01:59:34+00:00",
+    "stopTime": "2026-08-25T02:06:09.246920+00:00",
+    "tags": {},
+    "logLocation": {
+        "engineLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/3778195/engine",
+        "runLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/3778195"
+    },
+    "uuid": "dad01b52-41b7-3197-0a0e-2ca93a734677",
+    "runOutputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1c/3778195",
+    "storageType": "DYNAMIC",
+    "workflowOwnerId": "AWS_ACCOUNT",
+    "workflowUuid": "22d01b52-27d2-fcb8-6b60-462fe72b8d2f"
+}

@@ -1,0 +1,28 @@
+{
+    "items": [
+        {
+            "taskId": "4282800",
+            "status": "COMPLETED",
+            "name": "GATED_TRIM",
+            "cpus": 2,
+            "memory": 4,
+            "creationTime": "2026-08-25T02:17:34.750558+00:00",
+            "startTime": "2026-08-25T02:18:01.018000+00:00",
+            "stopTime": "2026-08-25T02:18:18.502000+00:00",
+            "gpus": 0,
+            "instanceType": "omics.c.large"
+        },
+        {
+            "taskId": "4949194",
+            "status": "COMPLETED",
+            "name": "GATED_QC",
+            "cpus": 2,
+            "memory": 4,
+            "creationTime": "2026-08-25T02:14:47.053789+00:00",
+            "startTime": "2026-08-25T02:17:15.565000+00:00",
+            "stopTime": "2026-08-25T02:17:33.732000+00:00",
+            "gpus": 0,
+            "instanceType": "omics.c.large"
+        }
+    ]
+}

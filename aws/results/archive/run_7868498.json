@@ -1,0 +1,34 @@
+{
+    "arn": "arn:aws:omics:us-east-1:AWS_ACCOUNT:run/7868498",
+    "id": "7868498",
+    "engineVersion": "25.10.0",
+    "status": "FAILED",
+    "workflowId": "3221933",
+    "workflowType": "PRIVATE",
+    "roleArn": "arn:aws:iam::AWS_ACCOUNT:role/nfgate-omics-run-role",
+    "name": "nfgate-probe-c-enforce",
+    "digest": "sha256:6d8985734d126c3371a5cbd7debaa836a7b3c2a64d0720265e9a8f8e42afc736",
+    "parameters": {
+        "image": "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim"
+    },
+    "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1c",
+    "resourceDigests": {
+        "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim": "sha256:0ad57fb94a9a64b0c83db89988f65e226ee529cbdca8fda6605632d644ad9fbc"
+    },
+    "startedBy": "arn:aws:iam::AWS_ACCOUNT:user/u889ser",
+    "creationTime": "2026-08-25T02:06:27.179970+00:00",
+    "startTime": "2026-08-25T02:06:42+00:00",
+    "stopTime": "2026-08-25T02:11:48.568320+00:00",
+    "statusMessage": "Run failed due to task: PROBE_CONTAINER_ENFORCE, id: 2329706, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/7868498/task/2329706 to debug the failure.",
+    "tags": {},
+    "failureReason": "RUN_TASK_FAILED",
+    "logLocation": {
+        "engineLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/7868498/engine",
+        "runLogStream": "arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/7868498"
+    },
+    "uuid": "f6d01b55-9ec6-8de0-dcf6-5268db4f3093",
+    "runOutputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1c/7868498",
+    "storageType": "DYNAMIC",
+    "workflowOwnerId": "AWS_ACCOUNT",
+    "workflowUuid": "1ed01b55-84c8-604c-ea8c-3f5388cea5a8"
+}

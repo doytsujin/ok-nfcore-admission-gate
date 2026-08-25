@@ -1,6 +1,6 @@
 # E1 — raw evidence
 
-Run 2026-08-24 (task timestamps 2026-08-25 UTC), account `426674444486`,
+Run 2026-08-24 (task timestamps 2026-08-25 UTC), account `AWS_ACCOUNT`,
 region `us-east-1`, HealthOmics engine **Nextflow 25.10.0**, storage `DYNAMIC`.
 
 ## E1a — observation

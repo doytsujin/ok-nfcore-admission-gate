@@ -31,6 +31,11 @@ aws/results/*
 !aws/results/e1c_local_control.md
 !aws/results/gate_real.json
 !aws/results/gate_real_evidence.md
+# The archived AWS evidence. This was pulled out of the account before it was
+# deleted, and the account no longer exists -- so if this is not tracked, the
+# raw record behind two drafts exists nowhere but one local disk.
+!aws/results/archive/
+!aws/results/archive/**
 !aws/results/trust_boundary.json
 !aws/results/trust_boundary_evidence.md
 !aws/results/e3_runs.jsonl

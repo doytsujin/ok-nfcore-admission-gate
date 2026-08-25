@@ -1,6 +1,6 @@
 {
   "workflowId": "4353359",
-  "image": "426674444486.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim",
+  "image": "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim",
   "arms": {
     "permit": {
       "minReadLength": 30,
@@ -36,7 +36,7 @@
       "runId": "8101547",
       "runStatus": "FAILED",
       "engineVersion": "25.10.0",
-      "statusMessage": "Run failed due to task: GATED_TRIM, id: 2899234, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:426674444486:log-group:/aws/omics/WorkflowLog:log-stream:run/8101547/task/2899234 to debug the failure.",
+      "statusMessage": "Run failed due to task: GATED_TRIM, id: 2899234, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/8101547/task/2899234 to debug the failure.",
       "tasks": [
         {
           "taskId": "2899234",

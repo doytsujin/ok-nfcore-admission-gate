@@ -1,7 +1,7 @@
 {
-  "image": "426674444486.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim",
+  "image": "AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/nfgate/probe:py312-slim",
   "region": "us-east-1",
-  "outputUri": "s3://nfgate-426674444486-us-east-1/nfgate/e1c",
+  "outputUri": "s3://nfgate-AWS_ACCOUNT-us-east-1/nfgate/e1c",
   "e1c_observe": {
     "outcome": "ACCEPTED",
     "workflowId": "7054838",
@@ -16,7 +16,7 @@
     "workflowId": "3221933",
     "runId": "7868498",
     "runStatus": "FAILED",
-    "statusMessage": "Run failed due to task: PROBE_CONTAINER_ENFORCE, id: 2329706, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:426674444486:log-group:/aws/omics/WorkflowLog:log-stream:run/7868498/task/2329706 to debug the failure.",
+    "statusMessage": "Run failed due to task: PROBE_CONTAINER_ENFORCE, id: 2329706, failure. Use the GetRunTask API for more information as well as the CloudWatch logs log stream: arn:aws:logs:us-east-1:AWS_ACCOUNT:log-group:/aws/omics/WorkflowLog:log-stream:run/7868498/task/2329706 to debug the failure.",
     "engineVersion": "25.10.0"
   },
   "verdict": {

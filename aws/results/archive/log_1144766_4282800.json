@@ -1,0 +1,21 @@
+{
+    "events": [
+        {
+            "timestamp": 1787624281000,
+            "message": "Task started",
+            "ingestionTime": 1787624281419
+        },
+        {
+            "timestamp": 1787624281338,
+            "message": "gate: PERMIT raw-reads:trim",
+            "ingestionTime": 1787624281622
+        },
+        {
+            "timestamp": 1787624281418,
+            "message": "Task succeeded",
+            "ingestionTime": 1787624281622
+        }
+    ],
+    "nextForwardToken": "f/39865353610609218945016655235946914502558788120207818753/s",
+    "nextBackwardToken": "b/39865353601287507452030854762539177088602417927655325696/s"
+}

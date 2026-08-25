@@ -1,0 +1,16 @@
+{
+    "items": [
+        {
+            "taskId": "7241923",
+            "status": "FAILED",
+            "name": "PROBE_ENFORCE",
+            "cpus": 2,
+            "memory": 4,
+            "creationTime": "2026-08-25T01:41:47.948223+00:00",
+            "startTime": "2026-08-25T01:43:26.048000+00:00",
+            "stopTime": "2026-08-25T01:43:44.339000+00:00",
+            "gpus": 0,
+            "instanceType": "omics.c.large"
+        }
+    ]
+}
