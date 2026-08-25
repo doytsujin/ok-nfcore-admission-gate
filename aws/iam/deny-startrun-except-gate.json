@@ -1,15 +1,4 @@
 {
-  "_comment": [
-    "This is the gate. The Lambda is the decision; this is the enforcement.",
-    "Attach to every principal that must not start runs directly -- humans,",
-    "CI roles, notebook roles. At organisation scale it belongs in an SCP so",
-    "that it cannot be detached by the account it constrains.",
-    "",
-    "The condition is on the role that HealthOmics sees as the caller. A deny",
-    "without the ArnNotLike exception would also lock out the gate itself, and",
-    "a deny that names the gate by user rather than by role breaks the first",
-    "time the function is redeployed."
-  ],
   "Version": "2012-10-17",
   "Statement": [
     {

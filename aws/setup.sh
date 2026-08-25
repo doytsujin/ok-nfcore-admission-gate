@@ -8,11 +8,15 @@
 # Prints every resource it made so teardown.sh can undo exactly those.
 set -euo pipefail
 
-BUCKET=""; DECISION_BUCKET=""
+BUCKET=""; DECISION_BUCKET=""; E1_ONLY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --bucket) BUCKET="$2"; shift 2 ;;
     --decision-bucket) DECISION_BUCKET="$2"; shift 2 ;;
+    # E1 needs a bucket and the run role and nothing else: its probes declare
+    # no container, so the ECR mirror (gigabytes, needs a docker daemon) and
+    # the gate Lambda are both dead weight until E1 has returned an answer.
+    --e1-only) E1_ONLY=1; shift ;;
     *) echo "unknown arg $1" >&2; exit 2 ;;
   esac
 done
@@ -27,9 +31,16 @@ ACCOUNT="$("${AWSC[@]}" sts get-caller-identity --query Account --output text)"
 ECR_BASE="${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com"
 
 echo "== account $ACCOUNT region $REGION =="
+# Appended, never truncated, and deduplicated on read. This file is the
+# teardown list; a re-run that resets it would silently drop every resource
+# created by the previous run -- which is exactly the run whose resources
+# already exist and so are not re-noted below.
 MADE="$ROOT/aws/results/created-resources.txt"
-mkdir -p "$(dirname "$MADE")"; : > "$MADE"
-note() { echo "$1" | tee -a "$MADE"; }
+mkdir -p "$(dirname "$MADE")"; touch "$MADE"
+note() {
+  echo "$1"
+  grep -qxF "$1" "$MADE" 2>/dev/null || echo "$1" >> "$MADE"
+}
 
 # --- buckets ----------------------------------------------------------------
 if ! "${AWSC[@]}" s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
@@ -99,6 +110,16 @@ echo "      --policy-document file://<(sed s/ACCOUNT_ID/$ACCOUNT/g aws/iam/deny-
 echo
 echo "  E2 is not measured until it is attached and a direct StartRun is denied."
 
+if [ "$E1_ONLY" = "1" ]; then
+  echo
+  echo "== --e1-only: skipping ECR mirrors and the gate lambda =="
+  echo "== created (cumulative) =="; sort -u "$MADE"
+  echo
+  echo "next: python3 aws/bench/run_probe.py --bucket $BUCKET \\"
+  echo "        --role-arn arn:aws:iam::${ACCOUNT}:role/nfgate-omics-run-role --confirm"
+  exit 0
+fi
+
 # --- ecr mirrors ------------------------------------------------------------
 echo "== mirroring containers into ECR =="
 while read -r src repo; do
@@ -146,7 +167,7 @@ fi
 
 rm -rf "$STAGE"
 echo
-echo "== created =="; cat "$MADE"
+echo "== created (cumulative) =="; sort -u "$MADE"
 echo
 echo "next: python3 aws/bench/run_probe.py --bucket $BUCKET \\"
 echo "        --role-arn arn:aws:iam::${ACCOUNT}:role/nfgate-omics-run-role --confirm"
