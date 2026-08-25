@@ -13,13 +13,49 @@ This file is how to run it.
 
 | | |
 |---|---|
-| Probes, drivers, IAM, packaging | **written and dry-run clean** |
 | E1 positive control (local Nextflow) | **run, calibrated** — `results/e1_local_control.json` |
-| E1, E2, E3 against AWS | **not run** — no working credentials on this machine |
+| **E1 against HealthOmics** | **RUN 2026-08-24 — the claim it tested is REFUTED** |
+| E2, E3 against HealthOmics | not run; E3 needs redesigning in light of E1 |
 
-Every AWS profile on this machine returns `InvalidClientTokenId`. Nothing here
-has touched an AWS account. The moment a working profile exists this is
-`preflight` → `setup` → three commands.
+## The E1 result
+
+**AWS HealthOmics honours `process.beforeScript`, including its exit status.**
+Per-task admission control is available on the managed service. The claim this
+arm was built to test does not hold.
+
+Account `426674444486`, `us-east-1`, HealthOmics engine **Nextflow 25.10.0**.
+Full evidence in [`results/e1_evidence.md`](results/e1_evidence.md).
+
+- **E1a** — `CreateWorkflow` accepted a definition containing `beforeScript`;
+  the run **COMPLETED**; `probe.out` reads `EXECUTED` and
+  `beforescript.witness` is present in the task's own working directory.
+- **E1b** — the run **FAILED** at the probe task. Its CloudWatch stream is
+  three lines: `Task started` / `refusing` / `Task failed`. `refusing` is what
+  the `beforeScript` writes before `exit 3`. The task script never ran.
+
+So AWS's linter list is wrong about `beforeScript` in exactly the way it was
+already wrong about `scratch`. That list was the sole basis for the claim, and
+treating it as a hypothesis rather than as evidence is what made this
+detectable.
+
+**Scope.** Verified for tasks declaring no `container` directive, which
+HealthOmics runs in its default container. Not yet verified for tasks
+declaring an ECR image — the case the real gate operates in. State the result
+with that boundary until E3 closes it.
+
+## What this does to the argument
+
+The granularity claim — *managed provenance or per-task enforcement, not both*
+— is dead as stated. What survives, and is worth testing next, is a **trust
+boundary** claim rather than a granularity one: the `beforeScript` gate lives
+inside the workflow bundle **the caller supplies**, so it protects a caller
+from their own pipeline but cannot be enforced *against* that caller, who can
+simply submit an ungated definition. Service-side, `omics:StartRun` remains the
+only place a policy can be imposed on someone else.
+
+That is a different and narrower contribution, and it is not yet established —
+IAM can condition `StartRun` on a specific workflow ID, which may close it
+entirely. It should be tested, not asserted.
 
 ## The finding this arm exists to test
 

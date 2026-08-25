@@ -235,13 +235,22 @@ for the protocol and for what would refute each claim — including the outcome
 where per-task enforcement turns out to work on HealthOmics and this section is
 wrong.
 
-**Status: the harness is written and the probes are calibrated; the AWS runs
-have not happened.** `aws/bench/local_control.sh` runs both probes under this
-repository's Nextflow, where `beforeScript` is honoured and a non-zero exit
-stops the task, and it passes — so a negative result on HealthOmics would be
-attributable to the service rather than to a broken probe. The runs themselves
-need AWS credentials this machine does not have. Estimated cost of the whole
-arm at 30 replicates: about **$2.30**.
+**Status: E1 has run, and it refuted the claim above.**
+
+**HealthOmics honours `beforeScript`, including its exit status.** Measured
+2026-08-24 on engine Nextflow 25.10.0: the observation probe completed with the
+witness file present in the task's working directory, and the enforcement
+probe's run failed with the gate's own stderr as the only line between task
+start and task failure. Evidence in
+[`aws/results/e1_evidence.md`](aws/results/e1_evidence.md).
+
+So per-task admission control **is** available on the managed service, and this
+gate ports across unchanged. AWS's linter list is wrong about `beforeScript` in
+the same way it was already wrong about `scratch` — which is why it was treated
+as a hypothesis and tested rather than repeated.
+
+Verified so far only for tasks declaring no `container` directive; the
+containerised case is what E3 now exists to check.
 
 ## Honest limits
 
@@ -267,11 +276,13 @@ arm at 30 replicates: about **$2.30**.
 - **The descriptors gate public test data.** Conditions have the shape of a
   regulated descriptor applied to data carrying no actual restriction, so that
   anyone can run this.
-- **The AWS arm is unrun.** [`aws/`](aws/) is a complete harness with a
-  calibrated positive control and nothing measured on AWS. Its claim about
-  HealthOmics currently rests on a linter list AWS last edited in February 2024,
-  which is demonstrably stale for at least one other directive. Until
-  `aws/results/e1_probe.json` exists, that claim is cited, not measured.
+- **The HealthOmics result is scoped to container-free tasks.** E1 measured
+  the default container HealthOmics supplies when a process declares none. The
+  real gate runs on tasks that declare an ECR image, and that case is not yet
+  measured — E3 covers it.
+- **E2 and E3 have not run.** Only E1 has. The trust-boundary claim that
+  replaced the refuted granularity claim is an argument, not a measurement, and
+  IAM conditions on the workflow ID may dispose of it entirely.
 - **No GA4GH endpoint is involved.** The crate conforms to the Workflow Run
   Crate profile shape but has not been validated against a profile validator,
   and nothing here speaks DRS, TES or WES.

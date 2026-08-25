@@ -26,6 +26,7 @@ __pycache__/
 aws/results/*
 !aws/results/e1_local_control.json
 !aws/results/e1_probe.json
+!aws/results/e1_evidence.md
 !aws/results/e3_runs.jsonl
 !aws/results/e3_granularity.json
 !aws/results/e3_meta.json

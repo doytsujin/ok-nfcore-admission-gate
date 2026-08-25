@@ -42,6 +42,26 @@ So the claim is tested against the running service, not the linter.
 
 ---
 
+## E1 — RESULT (run 2026-08-24): the claim is REFUTED
+
+**HealthOmics executes `beforeScript` and fails the task on a non-zero exit.**
+
+E1a returned `EXECUTED` with the witness file present in the task working
+directory; E1b's run FAILED with `refusing` — the beforeScript's own stderr —
+as the only line between task start and task failure. Engine: Nextflow 25.10.0.
+Evidence: `results/e1_evidence.md`, data: `results/e1_probe.json`.
+
+This is the outcome named below as *"what refutes the position this arm exists
+to support"*. It is reported as the finding, per that commitment. Per-task
+enforcement is available on HealthOmics, the local gate ports across unchanged,
+and the trade-off E3 was designed to price does not exist as stated.
+
+**E3 as specified below is therefore moot** and is retained only as the record
+of what was planned. See `README.md` for the trust-boundary reframing that
+survives, which is not yet established.
+
+---
+
 ## E1 — Is `beforeScript` honoured? (container-free, minutes, cents)
 
 Two workflows, deliberately separated so that each produces an answer whatever
