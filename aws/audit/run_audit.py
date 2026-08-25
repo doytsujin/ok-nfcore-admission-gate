@@ -40,14 +40,25 @@ RESULTS = ROOT / "aws" / "results"
 GEN = RESULTS / "audit-workflows"
 
 
+_MATERIALISE_LOCK = __import__("threading").Lock()
+
+
 def materialise(probe: P.Probe) -> Path:
-    """Write one probe out as a workflow directory."""
+    """Write one probe out as a workflow directory.
+
+    Serialised: with --repeat, several threads generate the same probe into the
+    same directory, and the zip is read immediately afterwards. The bytes are
+    identical either way, but a read that lands mid-write is not, and a
+    truncated definition reaches HealthOmics as a validation error that looks
+    like a service verdict.
+    """
     slug = probe.name.replace("[", "_").replace("]", "").replace("/", "_")
     d = GEN / slug
-    d.mkdir(parents=True, exist_ok=True)
-    proc = "AUDIT_" + slug.upper().replace("-", "_")
-    (d / "main.nf").write_text(P.render(probe, proc))
-    (d / "nextflow.config").write_text(P.CONFIG + "\n" + probe.extra_config + "\n")
+    with _MATERIALISE_LOCK:
+        d.mkdir(parents=True, exist_ok=True)
+        proc = "AUDIT_" + slug.upper().replace("-", "_")
+        (d / "main.nf").write_text(P.render(probe, proc))
+        (d / "nextflow.config").write_text(P.CONFIG + "\n" + probe.extra_config + "\n")
     return d
 
 
@@ -109,10 +120,10 @@ def run_local(probe: P.Probe, image: str) -> dict:
 def run_aws(probe: P.Probe, args) -> dict:
     d = materialise(probe)
     slug = d.name
-    zip_path = RESULTS / f"audit-{slug}.zip"
-    zip_path.write_bytes(package(d))
     import uuid
     suffix = uuid.uuid4().hex[:6]
+    zip_path = RESULTS / f"audit-{slug}-{suffix}.zip"
+    zip_path.write_bytes(package(d))
     name = f"nfgate-audit-{slug.lower().replace('_','-')}-{suffix}"[:60]
 
     try:
@@ -134,7 +145,7 @@ def run_aws(probe: P.Probe, args) -> dict:
                     "why": got.get("statusMessage", "")[:300]}
         time.sleep(5)
 
-    params = RESULTS / f"_audit_params_{slug}.json"
+    params = RESULTS / f"_audit_params_{slug}-{suffix}.json"
     params.write_text(json.dumps({"image": args.image}))
     run = aws("omics", "start-run", "--workflow-id", wid, "--role-arn", args.role_arn,
               "--output-uri", f"s3://{args.bucket}/{args.prefix}/{slug}-{suffix}",
