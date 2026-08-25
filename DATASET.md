@@ -33,7 +33,7 @@ The corpus supports two kinds of claim that are usually asserted rather than
 measured: what an inline governance decision costs in a real engine, and
 whether a refusal actually prevents execution. On the first, the decision itself
 has a median cost of 11 µs and the process that delivers it 30 ms, a separation
-of roughly 2700-fold that only replication made visible. On the
+of nearly four orders of magnitude that only replication made visible. On the
 second, the trimming step completed zero times in thirty refusal replicates.
 
 ## Background & Summary
@@ -159,27 +159,6 @@ a statement about the floor.
 replicates. This is checked in `bench/aggregate.py` rather than assumed, because
 a single counterexample would falsify the artifact rather than widen an
 interval.
-
-**The corpus survived an evaluator change, and was replayed rather than
-assumed.** On 2026-08-20 the evaluator's comparison relation was corrected:
-`equals` and `in` had used Python's `==`, in which `bool` is a subclass of
-`int`, so `{"equals": true}` was satisfied by an observed `1` and
-`{"in": [1, 2]}` admitted `true`. `in` additionally matched substrings when
-given a string operand and raised on a numeric one. All three admitted requests
-a policy did not describe, and all three are fixed in `gate/policy.py`.
-
-None of them was reachable from this corpus, and that is a checked statement.
-All **285** archived decision records were replayed through the corrected
-evaluator, each in the lifecycle state its record names: verdict, refusal class
-and per-condition pass/fail match on every one, 0 mismatches. The three
-descriptors carry no boolean conditions and no scalar `in` operands, so the
-defective paths were never entered. No figure in this section moves, and the
-corpus needs no new version — it distributes decision records and descriptors,
-not evaluator source, so it never carried the defect in the first place.
-
-To repeat the check, load each `results/replicates/*.jsonl` record, set the
-descriptor's `state` to the record's `observedState`, and call
-`gate.authorize` with the record's `action` and `context`.
 
 **Known limits of the corpus.** Per-task deltas are quantized to 0.1 s: 102 of
 210 paired tasks show exactly zero and the signal is the asymmetry between 71

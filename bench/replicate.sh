@@ -28,7 +28,6 @@ PIPELINE="$ROOT/pipeline-nfcore-demo"
 WORK_BASE="${NFGATE_WORK:-$HOME/.nfgate-work}"
 REPS="${NFGATE_REPS:-30}"
 ARMS="${NFGATE_ARMS:-baseline gated refuse}"
-GATE_PORT="${GATE_PORT:-8731}"
 
 TRACES="$ROOT/runs/replicates"
 DECISIONS="$ROOT/results/replicates"
@@ -60,7 +59,6 @@ one_run() {
     baseline) cfg=(-c "$ROOT/bench/common.config") ;;
     gated)    cfg=(-c "$ROOT/bench/gate.config") ;;
     refuse)   cfg=(-c "$ROOT/bench/gate.config") ;;
-    resident) cfg=(-c "$ROOT/bench/gate-resident.config") ;;
   esac
 
   local minlen=30
@@ -86,35 +84,6 @@ one_run() {
   echo "$(date -Is) $label tasks=$tasks" >> "$PROGRESS"
   echo "   $label  tasks=$tasks"
 }
-
-# The resident arm needs the daemon up for the whole sweep. Starting it per
-# replicate would measure daemon startup, which is the cost being removed.
-DAEMON_PID=""
-if echo "$ARMS" | grep -qw resident; then
-  rm -f "$WORK_BASE/gate-ready.json"
-  # NOT wrapped in a subshell: `( ... ) &` makes $! the subshell's pid, so the
-  # EXIT trap kills the wrapper and leaves the daemon holding the port. The
-  # next sweep then fails to bind and the failure looks like the harness.
-  # PYTHONPATH rather than cd, so the pid captured is python's own.
-  PYTHONPATH="$ROOT" python3 -m gate.daemon --descriptors "$ROOT/descriptors" \
-      --port "$GATE_PORT" --log "$DECISIONS/decisions_resident.jsonl" \
-      --run-id resident --ready-file "$WORK_BASE/gate-ready.json" \
-      >"$WORK_BASE/gate-daemon.log" 2>&1 &
-  DAEMON_PID=$!
-  # Wait on readiness rather than sleeping: a fixed sleep either wastes time or
-  # races, and a race here would look like the gate refusing.
-  for _ in $(seq 1 50); do
-    [ -f "$WORK_BASE/gate-ready.json" ] && break
-    sleep 0.1
-  done
-  if [ ! -f "$WORK_BASE/gate-ready.json" ]; then
-    echo "gate daemon failed to start; last lines of its log:" >&2
-    tail -3 "$WORK_BASE/gate-daemon.log" >&2
-    exit 1
-  fi
-  trap '[ -n "$DAEMON_PID" ] && kill "$DAEMON_PID" 2>/dev/null' EXIT
-  echo "gate daemon up on :$GATE_PORT (pid $DAEMON_PID)"
-fi
 
 echo "== replication: $REPS x [$ARMS] ==" | tee "$PROGRESS"
 for i in $(seq 1 "$REPS"); do

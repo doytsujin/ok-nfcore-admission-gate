@@ -149,24 +149,19 @@ def main() -> int:
     ap.add_argument("--traces", type=Path, default=Path("runs/replicates"))
     ap.add_argument("--decisions", type=Path, default=Path("results/replicates"))
     ap.add_argument("--out", type=Path, default=Path("results/replication.json"))
-    ap.add_argument("--treatment", default="gated",
-                    help="arm to compare against baseline. 'gated' is the "
-                         "per-task subprocess gate; 'resident' is the daemon. "
-                         "Both are paired against the same baseline replicates.")
     args = ap.parse_args()
 
     baseline = arm_runs(args.traces, "baseline")
-    gated = arm_runs(args.traces, args.treatment)
+    gated = arm_runs(args.traces, "gated")
     refuse = arm_runs(args.traces, "refuse")
     shared = sorted(set(baseline) & set(gated))
     if not shared:
         raise SystemExit(f"no paired replicates under {args.traces}")
 
     report: dict = {
-        "treatment": args.treatment,
         "replicates": {
             "baseline": len(baseline),
-            args.treatment: len(gated),
+            "gated": len(gated),
             "refuse": len(refuse),
             "paired": len(shared),
         },

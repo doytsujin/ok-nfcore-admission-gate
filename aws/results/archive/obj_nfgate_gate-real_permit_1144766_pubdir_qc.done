@@ -1,2 +1,0 @@
-{"action":"qc","conditionsChecked":[{"expected":["illumina"],"name":"platform","observed":"illumina","operator":"in","passed":true}],"context":{"platform":"illumina"},"datasetId":"raw-reads","descriptorVersion":"1.2.0","dryRun":false,"evalMicros":28,"observedState":"QC_PASSED","reasonClass":null,"reasons":[],"runId":"permit","schema":"1.0","task":"GATED_QC","timestamp":"2026-08-25T02:17:15.982Z","verdict":"PERMIT","wallMicros":6602}
-GATED_QC ran

@@ -215,54 +215,6 @@ cost time and will recur:
    `bench/run.sh` puts work under `$HOME/.nfgate-work` by default; override
    with `NFGATE_WORK`.
 
-## The AWS HealthOmics arm
-
-[`aws/`](aws/) ports this gate to a **managed** workflow service, to test the
-one thing the local artifact cannot: whether the per-task enforcement point it
-depends on exists off this machine.
-
-`process.beforeScript` appears on AWS's own list of Nextflow directives that
-HealthOmics does not support
-([`HealthOmicsNFUtils.groovy`](https://github.com/awslabs/linter-rules-for-nextflow/blob/main/linter-rules/src/main/groovy/software/amazon/nextflow/rules/utils/HealthOmicsNFUtils.groovy)).
-If that holds, the gate cannot sit where it sits here, and the only enforcement
-point left is in front of `omics:StartRun` — one level up and one granularity
-coarser, refusing whole runs rather than tasks.
-
-That list was last edited **2024-02-21**, and the current HealthOmics
-documentation contradicts it for `scratch`. So it is treated as a hypothesis
-and tested against the running service. See [`aws/EXPERIMENTS.md`](aws/EXPERIMENTS.md)
-for the protocol and for what would refute each claim — including the outcome
-where per-task enforcement turns out to work on HealthOmics and this section is
-wrong.
-
-**Status: E1 has run, and it refuted the claim above.**
-
-**HealthOmics honours `beforeScript`, including its exit status.** Measured
-2026-08-24 on engine Nextflow 25.10.0: the observation probe completed with the
-witness file present in the task's working directory, and the enforcement
-probe's run failed with the gate's own stderr as the only line between task
-start and task failure. Evidence in
-[`aws/results/e1_evidence.md`](aws/results/e1_evidence.md).
-
-So per-task admission control **is** available on the managed service, and this
-gate ports across unchanged. AWS's linter list is wrong about `beforeScript` in
-the same way it was already wrong about `scratch` — which is why it was treated
-as a hypothesis and tested rather than repeated.
-
-**And the gate itself has now been run there.** `gate/` and `descriptors/`,
-copied byte-identically into a HealthOmics workflow bundle, permit and refuse
-per task on the managed service: with `minReadLength=10`, `GATED_QC` completed
-and published its PERMIT record while `GATED_TRIM` failed with
-`gate: REFUSE raw-reads:trim [CONDITION_VIOLATED] minReadLength: 10 violates >= 20`
-and produced no output. Permitted work proceeded and forbidden work did not, in
-the same run.
-
-Two constraints came out of it, both measured rather than assumed: HealthOmics
-runs `beforeScript` **inside the task container** (the local engine runs it on
-the host), so the gate must ship in the bundle and be invoked by absolute path;
-and **every task image must carry a Python interpreter**, which many
-biocontainers do not.
-
 ## Honest limits
 
 - ~~**n = 1 per arm.**~~ Closed: 30 replicates per arm, interleaved and paired.
@@ -287,13 +239,6 @@ biocontainers do not.
 - **The descriptors gate public test data.** Conditions have the shape of a
   regulated descriptor applied to data carrying no actual restriction, so that
   anyone can run this.
-- **The HealthOmics result is scoped to container-free tasks.** E1 measured
-  the default container HealthOmics supplies when a process declares none. The
-  real gate runs on tasks that declare an ECR image, and that case is not yet
-  measured — E3 covers it.
-- **E2 and E3 have not run.** Only E1 has. The trust-boundary claim that
-  replaced the refuted granularity claim is an argument, not a measurement, and
-  IAM conditions on the workflow ID may dispose of it entirely.
 - **No GA4GH endpoint is involved.** The crate conforms to the Workflow Run
   Crate profile shape but has not been validated against a profile validator,
   and nothing here speaks DRS, TES or WES.

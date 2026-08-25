@@ -1,6 +1,0 @@
-# Source images that must exist in ECR before the demo arm can run.
-# HealthOmics tasks have no internet egress, so every one of these is mirrored
-# into a private repository in the run's own account and region.
-biocontainers/fastqc:0.12.1--hdfd78af_0        nfgate/fastqc
-biocontainers/seqtk:1.4--he4a0461_1            nfgate/seqtk
-biocontainers/multiqc:1.25.1--pyhdfd78af_0     nfgate/multiqc
