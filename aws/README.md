@@ -9,6 +9,21 @@ question with a measurement instead of a design document:
 `EXPERIMENTS.md` is the protocol, including what would refute each claim.
 This file is how to run it.
 
+## The account has been torn down
+
+Everything this arm created in AWS was deleted on 2026-08-25: runs, workflows,
+the ECR repository, the gate Lambda, three IAM roles and both buckets. The
+account is clean and is costing nothing.
+
+**The evidence survived the teardown.** `aws/archive_evidence.sh` pulled 52
+files (212 KB) into `aws/results/archive/` first — run and task metadata, the
+CloudWatch task logs carrying the refusal lines, and every published text
+artefact. Deleting the account without that would have left the papers'
+central claims unverifiable by anyone, including us.
+
+`aws/teardown.sh` reproduces the deletion; `aws/setup.sh` reproduces the
+account. Re-running the whole arm costs about two dollars.
+
 ## Status
 
 | | |
