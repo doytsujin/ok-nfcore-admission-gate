@@ -121,7 +121,24 @@ if [ "$E1_ONLY" = "1" ]; then
 fi
 
 # --- ecr mirrors ------------------------------------------------------------
-echo "== mirroring containers into ECR =="
+# podman by preference, and not only because it is what is installed here: the
+# local arm runs its containers under rootless podman, so mirroring with the
+# same engine means the images pushed to ECR are the ones the measured runs
+# actually used. Override with NFGATE_CONTAINER_CMD if you want otherwise.
+CTR="${NFGATE_CONTAINER_CMD:-}"
+if [ -z "$CTR" ]; then
+  if command -v podman >/dev/null 2>&1; then CTR=podman
+  elif command -v docker >/dev/null 2>&1; then CTR=docker
+  else echo "no podman or docker on PATH -- cannot mirror containers" >&2; exit 1
+  fi
+fi
+echo "== mirroring containers into ECR using $CTR =="
+
+# Rootless podman keeps its own auth file; logging in per-image would be three
+# identical round trips, so it happens once here.
+"${AWSC[@]}" ecr get-login-password \
+  | "$CTR" login --username AWS --password-stdin "$ECR_BASE"
+
 while read -r src repo; do
   case "$src" in ''|\#*) continue ;; esac
   "${AWSC[@]}" ecr describe-repositories --repository-names "$repo" >/dev/null 2>&1 || {
@@ -130,10 +147,12 @@ while read -r src repo; do
   }
   tag="${src##*:}"
   echo "   $src -> $ECR_BASE/$repo:$tag"
-  "${AWSC[@]}" ecr get-login-password | docker login --username AWS --password-stdin "$ECR_BASE" >/dev/null 2>&1
-  docker pull --quiet "$src"
-  docker tag "$src" "$ECR_BASE/$repo:$tag"
-  docker push --quiet "$ECR_BASE/$repo:$tag"
+  # biocontainers images are multi-arch; HealthOmics runs x86_64, and rootless
+  # podman on an x86_64 host picks that anyway. Named explicitly so the mirror
+  # does not silently become arm64 if this is ever run from an Apple machine.
+  "$CTR" pull --quiet --arch amd64 "docker.io/$src"
+  "$CTR" tag "docker.io/$src" "$ECR_BASE/$repo:$tag"
+  "$CTR" push --quiet "$ECR_BASE/$repo:$tag"
 done < "$ROOT/aws/workflows/demo/containers.txt"
 
 # --- gate lambda ------------------------------------------------------------

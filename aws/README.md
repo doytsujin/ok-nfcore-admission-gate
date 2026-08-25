@@ -72,6 +72,11 @@ python3 aws/bench/run_arm.py --bucket my-nfgate-bucket \
 python3 aws/bench/aggregate_aws.py
 ```
 
+E3 mirrors three biocontainers into ECR with **podman** (rootless), the same
+engine the local arm runs its containers under, so the images HealthOmics pulls
+are the ones the measured runs used. Set `NFGATE_CONTAINER_CMD=docker` to
+override. E1 needs no container engine at all.
+
 E3 needs `pipeline-nfcore-demo/` present. It is gitignored — clone it as the
 root README describes before running the demo arm. E1 does not need it, which
 is deliberate: the experiment that answers the central question has the fewest
