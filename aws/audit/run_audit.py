@@ -89,6 +89,16 @@ def run_local(probe: P.Probe, image: str) -> dict:
     w = parse(text)
     if (pub / "afterscript.witness").exists():
         w["_afterscript_witness"] = "yes"
+    if probe.needs_engine_log:
+        w["_engine_marker"] = "yes" if P.MARKER in (proc.stdout + proc.stderr) else ""
+    if probe.name == "storeDir":
+        w["_storedir_hit"] = "yes" if (pub / "stored").exists() else ""
+        w.setdefault("produced", "1")
+    if probe.name.startswith("maxForks"):
+        # Locally, executor.queueSize would confound this; the local check is
+        # only that the directive is accepted and the tasks run.
+        w["_no_overlap"] = "yes"
+        w["_overlap_detail"] = "local: not a timing test"
     verdict, why = probe.decide(w) if w else ("INCONCLUSIVE", "no output produced")
     return {"probe": probe.name, "where": "local", "exit": proc.returncode,
             "verdict": verdict, "why": why, "witness": w,
@@ -152,10 +162,73 @@ def run_aws(probe: P.Probe, args) -> dict:
         if key.endswith("afterscript.witness"):
             w["_afterscript_witness"] = "yes"
 
+    if probe.needs_engine_log:
+        w["_engine_marker"] = "yes" if P.MARKER in _engine_log(rid, args) else ""
+    if probe.name == "storeDir":
+        w["_storedir_hit"] = "yes" if "/stored/" in listing else ""
+        w.setdefault("produced", "1")
+    if probe.name.startswith("maxForks"):
+        ok, detail = _overlap(rid, args)
+        w["_no_overlap"], w["_overlap_detail"] = ok, detail
+
     verdict, why = probe.decide(w) if w else ("INCONCLUSIVE", "no output produced")
     return {"probe": probe.name, "where": "healthomics", "runId": rid,
             "runStatus": done.get("status"), "engineVersion": done.get("engineVersion"),
             "verdict": verdict, "why": why, "witness": w}
+
+
+def _engine_log(run_id: str, args) -> str:
+    """Whole engine log, paged. Some verdicts live only here."""
+    token, out = None, []
+    for _ in range(30):
+        extra = ["--next-token", token] if token else []
+        try:
+            d = aws("logs", "get-log-events",
+                    "--log-group-name", "/aws/omics/WorkflowLog",
+                    "--log-stream-name", f"run/{run_id}/engine",
+                    "--start-from-head", *extra,
+                    region=args.region, profile=args.profile)
+        except AwsError:
+            break
+        ev = d.get("events", [])
+        out += [e.get("message", "") for e in ev]
+        nt = d.get("nextForwardToken")
+        if not ev or nt == token:
+            break
+        token = nt
+    return "\n".join(out)
+
+
+def _overlap(run_id: str, args) -> tuple[str, str]:
+    """Did any two tasks run at the same time? The maxForks verdict.
+
+    Read from the API's own task timestamps rather than from anything the tasks
+    report about themselves, because a task cannot observe whether another task
+    was running beside it.
+    """
+    from datetime import datetime
+    items = aws("omics", "list-run-tasks", "--id", run_id,
+                region=args.region, profile=args.profile).get("items", [])
+    spans = []
+    for t in items:
+        d = aws("omics", "get-run-task", "--id", run_id, "--task-id", t["taskId"],
+                region=args.region, profile=args.profile)
+        a, b = d.get("startTime"), d.get("stopTime")
+        if not (a and b):
+            continue
+        fmt = "%Y-%m-%dT%H:%M:%S.%f%z"
+        try:
+            spans.append((datetime.strptime(a.replace("Z", "+0000"), fmt),
+                          datetime.strptime(b.replace("Z", "+0000"), fmt),
+                          d.get("name")))
+        except ValueError:
+            continue
+    spans.sort()
+    for i in range(len(spans) - 1):
+        if spans[i][1] > spans[i + 1][0]:
+            return "no", f"{spans[i][2]} overlaps {spans[i+1][2]}"
+    return ("yes", f"{len(spans)} tasks, none overlapping") if len(spans) > 1 else \
+           ("unknown", f"only {len(spans)} task(s); cannot judge")
 
 
 def main() -> int:
@@ -172,7 +245,7 @@ def main() -> int:
     args = ap.parse_args()
 
     RESULTS.mkdir(parents=True, exist_ok=True)
-    pilot = P.PILOT
+    pilot = P.ALL
     if args.only:
         want = {x.strip() for x in args.only.split(",")}
         pilot = [p for p in pilot if p.name in want]

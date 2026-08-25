@@ -26,6 +26,10 @@ class Probe:
     needs_engine_log: bool = False
     extra_config: str = ""
     notes: str = ""
+    # Probes that need an input, or more than one task, cannot use the plain
+    # single-process template.
+    process_input: str = ""
+    workflow_call: str = ""
 
 
 def _f(w: dict, k: str, default: str = "") -> str:
@@ -174,7 +178,7 @@ process {process_name} {{
     {p.directive}
 
     publishDir params.pubdir, mode: 'copy'
-
+{("    input:" + chr(10) + "    " + p.process_input + chr(10)) if p.process_input else ""}
     output:
     path 'probe.out'
 
@@ -185,7 +189,7 @@ process {process_name} {{
 }}
 
 workflow {{
-    {process_name}()
+    {p.workflow_call.replace("PROC", process_name) if p.workflow_call else process_name + "()"}
 }}
 """
 
@@ -201,3 +205,199 @@ params.image  = null
 // which is exactly what an afterScript witness is. Overridden locally.
 params.exportdir = '/mnt/workflow/output'
 """
+
+
+# ============================================================================
+# Round 2 -- the remaining cleanly testable entries.
+#
+# Two of these degrade honestly rather than pretend to a verdict they cannot
+# reach. `cache` needs a resume to observe a skip and HealthOmics has no
+# resume, so the probe can only distinguish "accepted" from "rejected", never
+# "honoured". It is reported as ACCEPTED_ONLY, not as SUPPORTED.
+# ============================================================================
+
+MARKER = "NFGATE_DEBUG_MARKER_7f3a"
+
+debug = Probe(
+    name="debug",
+    directive="debug true",
+    script=f'''echo "{MARKER}"
+    echo "emitted=yes" > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "task stdout was echoed into the engine log")
+        if w.get("_engine_marker") else
+        ("NOT_SUPPORTED", "task stdout did not reach the engine log")
+    ),
+    needs_engine_log=True,
+    notes="debug true echoes task stdout into the Nextflow log; verdict is read from there",
+)
+
+echo_ = Probe(
+    name="echo",
+    directive="echo true",
+    script=f'''echo "{MARKER}"
+    echo "emitted=yes" > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "deprecated alias honoured; stdout reached the engine log")
+        if w.get("_engine_marker") else
+        ("NOT_SUPPORTED", "no stdout in the engine log")
+    ),
+    needs_engine_log=True,
+    notes="deprecated alias of debug; removal in a newer engine would show as REJECTED_AT_CREATE",
+)
+
+stage_in_mode = Probe(
+    name="stageInMode",
+    directive="stageInMode 'copy'",
+    process_input="path 'staged.cfg'",
+    workflow_call='PROC(channel.fromPath("${projectDir}/nextflow.config"))',
+    script='''{
+      echo "is_symlink=$( [ -L staged.cfg ] && echo yes || echo no )"
+      echo "is_file=$( [ -f staged.cfg ] && echo yes || echo no )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "input was copied, not symlinked")
+        if _f(w, "is_symlink") == "no" and _f(w, "is_file") == "yes"
+        else ("NOT_SUPPORTED", f"input is a symlink: is_symlink={_f(w,'is_symlink')}")
+    ),
+    notes="needs an input to stage; the workflow stages the bundle's own config",
+    extra_config="",
+)
+
+store_dir = Probe(
+    name="storeDir",
+    directive="storeDir \"${params.exportdir}/stored\"",
+    script='echo "produced=1" > probe.out',
+    decide=lambda w: (
+        ("SUPPORTED", "output was written into the storeDir")
+        if w.get("_storedir_hit") else
+        ("NOT_SUPPORTED", "nothing appeared in the storeDir")
+    ),
+    notes="verdict from whether the declared output lands under storeDir in the exported tree",
+)
+
+conda = Probe(
+    name="conda",
+    directive="conda 'bioconda::seqtk=1.4'",
+    script='''{
+      echo "seqtk=$( command -v seqtk || echo none )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "conda environment was provisioned; seqtk present")
+        if _f(w, "seqtk", "none") != "none"
+        else ("NOT_SUPPORTED", "directive ignored; seqtk absent from the task")
+    ),
+    notes="HealthOmics tasks have no outbound network, so resolution could not succeed anyway",
+)
+
+spack = Probe(
+    name="spack",
+    directive="spack 'seqtk'",
+    script='''{
+      echo "seqtk=$( command -v seqtk || echo none )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "spack environment was provisioned; seqtk present")
+        if _f(w, "seqtk", "none") != "none"
+        else ("NOT_SUPPORTED", "directive ignored; seqtk absent from the task")
+    ),
+)
+
+cache = Probe(
+    name="cache[acceptance-only]",
+    directive="cache false",
+    script='echo "ran=1" > probe.out',
+    decide=lambda w: (
+        ("ACCEPTED_ONLY",
+         "definition accepted and the run completed; whether the directive is "
+         "HONOURED cannot be observed without a resume, which HealthOmics does "
+         "not offer")
+        if w else ("INCONCLUSIVE", "no output")
+    ),
+    notes="deliberately cannot reach SUPPORTED; reported as acceptance only",
+)
+
+max_forks = Probe(
+    name="maxForks",
+    directive="maxForks 1",
+    process_input="val i",
+    workflow_call="PROC(channel.of(1, 2, 3))",
+    script='''{
+      echo "task=$( date +%s%N )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("SUPPORTED", "tasks did not overlap in time")
+        if w.get("_no_overlap") == "yes"
+        else ("NOT_SUPPORTED", f"tasks overlapped: {w.get('_overlap_detail','')}")
+    ),
+    notes="three parallel tasks; verdict from task start/stop times via the API",
+)
+
+ROUND2 = [debug, echo_, stage_in_mode, store_dir, conda, spack, cache, max_forks]
+ALL = PILOT + ROUND2
+
+
+# --- controls forced by round 2 ---------------------------------------------
+# maxForks: "three tasks did not overlap" only means something if three tasks
+# WOULD overlap without the directive. HealthOmics might serialise them anyway.
+max_forks_control = Probe(
+    name="maxForks[control-no-directive]",
+    directive="",
+    process_input="val i",
+    workflow_call="PROC(channel.of(1, 2, 3))",
+    script='''{
+      echo "task=$( date +%s%N )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("OVERLAPPED", "tasks ran concurrently without the directive, so the "
+                       "maxForks probe can detect a difference")
+        if w.get("_no_overlap") == "no" else
+        ("NO_OVERLAP", "tasks did not overlap even without maxForks -- the "
+                       "maxForks verdict is UNDECIDABLE, not supported")
+    ),
+    notes="control: without this, a no-overlap result proves nothing",
+)
+
+CONTROLS = [max_forks_control]
+ALL = ALL + CONTROLS
+
+# stageInMode: "not a symlink" is only evidence if the DEFAULT is a symlink.
+# HealthOmics stages from S3 and may copy regardless.
+stage_in_mode_control = Probe(
+    name="stageInMode[control-no-directive]",
+    directive="",
+    process_input="path 'staged.cfg'",
+    workflow_call='PROC(channel.fromPath("${projectDir}/nextflow.config"))',
+    script='''{
+      echo "is_symlink=$( [ -L staged.cfg ] && echo yes || echo no )"
+      echo "is_file=$( [ -f staged.cfg ] && echo yes || echo no )"
+    } > probe.out''',
+    decide=lambda w: (
+        ("DEFAULT_IS_SYMLINK", "default stages a symlink, so the stageInMode "
+                               "probe can detect a difference")
+        if _f(w, "is_symlink") == "yes" else
+        ("DEFAULT_IS_COPY", "default already copies -- the stageInMode verdict "
+                            "is UNDECIDABLE, not supported")
+    ),
+    notes="control: without this, 'input was copied' proves nothing",
+)
+
+# shell: BASH_VERSION=none is only evidence if the DEFAULT sets it.
+shell_control = Probe(
+    name="shell[control-no-directive]",
+    directive="",
+    script='''{
+      echo "interpreter=$0"
+      echo "bash_version=${BASH_VERSION:-none}"
+    } > probe.out''',
+    decide=lambda w: (
+        ("DEFAULT_IS_BASH", "default is bash, so the shell probe can detect a difference")
+        if _f(w, "bash_version", "none") != "none" else
+        ("DEFAULT_NOT_BASH", "default already lacks BASH_VERSION -- the shell "
+                             "verdict is UNDECIDABLE, not supported")
+    ),
+    notes="control: without this, BASH_VERSION=none proves nothing",
+)
+
+CONTROLS = CONTROLS + [stage_in_mode_control, shell_control]
+ALL = ALL + [stage_in_mode_control, shell_control]

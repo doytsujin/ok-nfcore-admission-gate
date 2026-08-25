@@ -1,71 +1,102 @@
-# Audit results — pilot
+# Audit results
 
-HealthOmics, account `426674444486`, `us-east-1`, engine **Nextflow 25.10.0**,
-image `nfgate/probe:py312-slim`. Measured 2026-08-24.
+AWS HealthOmics, account `426674444486`, `us-east-1`, engine **Nextflow
+25.10.0**, image `nfgate/probe:py312-slim`. Measured 2026-08-24.
 
-Every probe was calibrated against the local engine first and returned
-`SUPPORTED` there, as it must — these are all documented Nextflow behaviours.
-A probe that cannot show a directive working locally proves nothing.
+The claim under audit is AWS's own
+`UNSUPPORTED_NF_PROCESS_DIRECTIVES` list — 23 process directives the vendor
+states its service does not support, published in a linter it ships for the
+purpose, last edited **2024-02-21**.
 
-## Verdicts
+## Result
 
-| Directive | On AWS's unsupported list | Measured on HealthOmics | Claim |
-|---|---|---|---|
-| `errorStrategy` | **no** — documented supported | SUPPORTED | *control passed* |
-| `beforeScript` | yes | **SUPPORTED** | **false** |
-| `afterScript` | yes | **SUPPORTED** | **false** |
-| `shell` | yes | **SUPPORTED** | **false** |
-| `scratch` | yes | **SUPPORTED** | **false** |
-| `containerOptions` | yes | NOT_SUPPORTED | correct |
+**Of 8 entries with a decidable probe, 7 do not hold.**
 
-**Five list entries tested. Four are false.**
+| Directive | AWS says | Measured | Claim | Controlled by |
+|---|---|---|---|---|
+| `beforeScript` | unsupported | SUPPORTED | **false** | dropped/rejected alternatives |
+| `afterScript` | unsupported | SUPPORTED | **false** | no witness without the directive |
+| `shell` | unsupported | SUPPORTED | **false** | control: default is bash 5.2.37 |
+| `scratch` | unsupported | SUPPORTED | **false** | prior runs: default cwd is `/mnt/workflow/…` |
+| `stageInMode` | unsupported | SUPPORTED | **false** | control: default stages a symlink |
+| `storeDir` | unsupported | SUPPORTED | **false** | output appears only under storeDir |
+| `maxForks` | unsupported | SUPPORTED | **false** | control: tasks overlap without it |
+| `containerOptions` | unsupported | NOT_SUPPORTED | **correct** | — |
+| `errorStrategy` | *not on the list* | SUPPORTED | *positive control passed* | — |
 
-## Evidence
+## Not counted, and why
 
-- `beforeScript` — witness file in the task work dir; non-zero exit fails the
-  task and the script never runs. See `../results/e1_evidence.md`.
-- `afterScript` — run `1293674`; witness exported to
-  `output/afterscript.witness`.
-- `shell` — run `1902912`; `BASH_VERSION=none`, so `['/bin/sh','-eu']` took
-  effect. `$0` reports the script path, not the interpreter, so
-  `BASH_VERSION` is the signal.
-- `scratch` — run `2576123`; task executed at `/tmp/nxf.umatDhrf3v`, outside
-  `/mnt/workflow/`. Confirms AWS's current documentation against AWS's linter.
-- `containerOptions` — run `6055504`; `-e NFGATE_PROBE=applied` produced no
-  environment variable in the task.
+Excluding these matters more than the headline. Each was a candidate
+verdict that the evidence does not support.
 
-## The control matters, and so does the negative
+| Directive | Verdict withheld | Reason |
+|---|---|---|
+| `debug` | would have read NOT_SUPPORTED | HealthOmics writes task stdout to the task log **unconditionally**; the probe cannot see whether the directive did anything |
+| `echo` | would have read NOT_SUPPORTED | same |
+| `conda` | would have read NOT_SUPPORTED | the probe reads NOT_SUPPORTED **locally too** — conda is not installed on the calibration host, so nothing is attributable to HealthOmics |
+| `spack` | would have read NOT_SUPPORTED | same |
+| `cache` | ACCEPTED_ONLY | observing whether it is *honoured* needs a resume, which HealthOmics does not offer |
 
-`errorStrategy` is not on the list; AWS documents it as supported. It returned
-SUPPORTED, so the harness was not simply reporting "everything works".
+`debug` and `echo` are the ones worth dwelling on: both would have counted as
+**AWS being right**. An audit of someone else's errors is least likely to
+question a result that flatters the audited party, and these two were caught
+only by checking where the output actually went.
 
-`containerOptions` is on the list and is **correct**. An audit of someone
-else's errors is most likely to fail by finding what it went looking for, and a
-result set with no confirmations would be the strongest reason to distrust this
-one.
+Seven further entries — `queue`, `executor`, `clusterOptions`, `machineType`,
+`arch`, `penv`, `pod` — have no observable surface on a managed service and
+were never testable by this method. See `DIRECTIVES.md`.
 
-## What this does and does not support
+## Controls
 
-**Supported:** on a vendor-published list of 23 unsupported features, last
-edited 2024-02-21, four of the five entries tested do not hold. The list is not
-a reliable basis for a design decision.
+Three verdicts were withheld until a no-directive control proved the probe
+could detect a difference at all. Every one of them would otherwise have
+counted as a claim being false:
 
-**Not supported:** any claim about the remaining 18 entries, or any general
-statement about AWS documentation quality. Thirteen entries are cleanly
-testable and eight of those are still untested; seven cannot be tested by this
-method at all and are listed as such in `DIRECTIVES.md`.
+- **`maxForks`** — without the directive, tasks 1 and 3 overlap. With
+  `maxForks 1`, three tasks, none overlapping.
+- **`stageInMode`** — without the directive the staged input is a symlink; with
+  `stageInMode 'copy'` it is a regular file.
+- **`shell`** — without the directive `BASH_VERSION=5.2.37(1)-release`; with
+  `['/bin/sh','-eu']`, unset.
 
-## Probe defects caught by calibration, not mistaken for findings
+`errorStrategy` rides along as a positive control: not on the list, documented
+supported, and it reads SUPPORTED. Had it not, no verdict in the run would be
+usable.
 
-Three so far, and each would have looked like a service verdict:
+## What this supports
+
+> On a vendor-published list of 23 unsupported features, last edited 907 days
+> before the test, **7 of the 8 entries with a decidable probe do not hold**.
+
+And the consequence that travels past genomics:
+
+> A governance mechanism whose correctness is argued from a provider's
+> documentation inherits that documentation's error rate — and that rate is
+> measurable rather than assumed.
+
+## What it does not support
+
+- Nothing about the 15 entries not decided here.
+- No general claim about AWS documentation quality. One list, one service.
+- **n = 1 per directive.** These are binary behaviours rather than
+  measurements with variance, but a transient failure would read as a
+  confirmation. The single `NOT_SUPPORTED` verdict — `containerOptions` — is
+  the one where that risk matters and it has not been repeated.
+
+## Probe defects caught by calibration rather than reported as findings
+
+Six, across the whole arm. Each would have looked like service behaviour:
 
 1. Alpine has no `/bin/bash`, which Nextflow's `.command.sh` requires.
-2. An unset `$IMAGE` under `bash -ue` aborts the task before its declared
-   output exists.
+2. An unset `$IMAGE` under `bash -ue` aborts the task before its output exists.
 3. The first `afterScript` probe wrote to `publishDir`, which Nextflow manages
-   and which is not writable at `afterScript` time — the task died with an
-   empty log, and "ran but could not write" is indistinguishable from "never
-   ran" when the task dies either way.
+   and which is not writable when `afterScript` runs.
+4. `shell` in a process body collides with Nextflow's `shell:` block keyword
+   and fails to compile.
+5. `debug`/`echo` read the wrong log stream.
+6. `--only` overwrote the result file, discarding verdicts that cost money.
 
-This is the reason the method is worth reporting alongside the numbers: three
-of the failures encountered in auditing someone else's errors were mine.
+Three of the six would have produced a *wrong finding* rather than an obvious
+failure. That is the argument for the method, and it is worth reporting beside
+the numbers: most of what went wrong in auditing someone else's errors was
+mine.
