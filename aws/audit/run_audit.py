@@ -81,6 +81,7 @@ def run_local(probe: P.Probe, image: str) -> dict:
     proc = subprocess.run(
         [str(ROOT / "toolchain" / "nextflow"), "run", str(d / "main.nf"),
          "-c", str(cfg), "--image", image, "--pubdir", str(pub),
+         "--exportdir", str(pub),
          "-w", str(work / "w"), "-ansi-log", "false"],
         capture_output=True, text=True, env=env, timeout=900)
 
@@ -165,12 +166,19 @@ def main() -> int:
     ap.add_argument("--prefix", default="nfgate/audit")
     ap.add_argument("--region", default=os.environ.get("AWS_REGION", "us-east-1"))
     ap.add_argument("--profile", default=os.environ.get("AWS_PROFILE"))
+    ap.add_argument("--only", default="", help="comma-separated probe names")
     ap.add_argument("--jobs", type=int, default=5,
                     help="concurrent runs; StartRun is quota-limited to 5 TPS")
     args = ap.parse_args()
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     pilot = P.PILOT
+    if args.only:
+        want = {x.strip() for x in args.only.split(",")}
+        pilot = [p for p in pilot if p.name in want]
+        if not pilot:
+            print(f"no probes match {sorted(want)}", file=sys.stderr)
+            return 2
 
     if args.local:
         image = args.image or "docker.io/library/python:3.12-slim"
@@ -190,7 +198,19 @@ def main() -> int:
         print("run with --local to calibrate, or --confirm to test on HealthOmics")
         return 0
 
-    out.write_text(json.dumps(rows, indent=2) + "\n")
+    # Merge rather than overwrite. A --only re-run of one probe would
+    # otherwise discard every other verdict in the file, which is a silent way
+    # to lose measurements that cost money to produce.
+    prior = []
+    if out.exists():
+        try:
+            prior = json.loads(out.read_text())
+        except json.JSONDecodeError:
+            prior = []
+    fresh = {r["probe"] for r in rows}
+    merged = [r for r in prior if r["probe"] not in fresh] + rows
+    merged.sort(key=lambda r: r["probe"])
+    out.write_text(json.dumps(merged, indent=2) + "\n")
     width = max(len(r["probe"]) for r in rows)
     for r in rows:
         print(f"  {r['probe']:<{width}}  {r['verdict']:<18} {r['why'][:80]}")

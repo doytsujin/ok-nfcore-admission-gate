@@ -38,7 +38,17 @@ def _f(w: dict, k: str, default: str = "") -> str:
 # only surface that outlives the task.
 afterscript = Probe(
     name="afterScript",
-    directive="""afterScript "echo ran > ${params.pubdir}/afterscript.witness" """,
+    # Writes to the workflow-level export path rather than to publishDir:
+    # publishDir is Nextflow-managed and is not a writable directory at
+    # afterScript time, so the first version of this probe failed the task and
+    # produced an ambiguous verdict -- "ran and could not write" is
+    # indistinguishable from "did not run" if the task dies either way.
+    #
+    # `|| true` is load-bearing for the same reason. A probe that can fail the
+    # task cannot separate "the directive was honoured and its non-zero exit
+    # propagated" from "the directive is unsupported and something else broke".
+    directive=('afterScript "mkdir -p ${params.exportdir} 2>/dev/null; '
+               'echo ran > ${params.exportdir}/afterscript.witness 2>/dev/null || true"'),
     script='echo "placeholder=1" > probe.out',
     decide=lambda w: (
         ("SUPPORTED", "afterScript executed; witness present in the published output")
@@ -186,4 +196,8 @@ CONFIG = """manifest {
 
 params.pubdir = '/mnt/workflow/pubdir'
 params.image  = null
+
+// HealthOmics exports only this prefix for content produced outside a task,
+// which is exactly what an afterScript witness is. Overridden locally.
+params.exportdir = '/mnt/workflow/output'
 """
