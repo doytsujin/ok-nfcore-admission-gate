@@ -145,6 +145,13 @@ while read -r src repo; do
     "${AWSC[@]}" ecr create-repository --repository-name "$repo" >/dev/null
     note "ecr repo $repo"
   }
+  # HealthOmics pulls as a SERVICE PRINCIPAL, not as the run role, so the run
+  # role's ecr:* grants are not sufficient and StartRun fails with a bare
+  # "ECR access denied (omics.amazonaws.com)". Each repository needs its own
+  # resource policy. Scoped with aws:SourceAccount so the repository cannot be
+  # used as a confused deputy by another account's runs.
+  "${AWSC[@]}" ecr set-repository-policy --repository-name "$repo" \
+    --policy-text "$(render "$ROOT/aws/iam/ecr-repository-policy.json")" >/dev/null
   tag="${src##*:}"
   echo "   $src -> $ECR_BASE/$repo:$tag"
   # biocontainers images are multi-arch; HealthOmics runs x86_64, and rootless

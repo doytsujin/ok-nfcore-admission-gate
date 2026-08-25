@@ -50,6 +50,23 @@ Read inputs, write outputs, pull containers from the `nfgate/*` repositories,
 write its own logs. **It cannot call `StartRun`**, so a task cannot launch an
 ungated run from inside a gated one.
 
+## `ecr-repository-policy.json` — required, and not what AWS documents
+
+HealthOmics pulls container images as the **service principal**
+`omics.amazonaws.com`, not as the run role. The run role's `ecr:*` grants are
+therefore not sufficient, and without this resource policy on each repository
+`StartRun` fails with a bare `ECR access denied (omics.amazonaws.com)` and no
+indication of what is missing.
+
+**AWS's documented example does not apply as written.** The policy on
+`permissions-ecr.html` includes `"Resource": "*"`; ECR rejects any repository
+policy containing a `Resource` element with `InvalidParameterException: Invalid
+repository policy provided` — the repository is implicit. Verified against the
+API on 2026-08-24. The version here omits it and is accepted.
+
+The `aws:SourceAccount` condition is kept: it is accepted, and without it the
+repository can be used as a confused deputy by another account's runs.
+
 ## `omics-run-role-trust.json`
 
 Trust policy letting `omics.amazonaws.com` assume the run role. Nothing else.
