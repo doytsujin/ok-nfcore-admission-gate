@@ -249,8 +249,19 @@ gate ports across unchanged. AWS's linter list is wrong about `beforeScript` in
 the same way it was already wrong about `scratch` — which is why it was treated
 as a hypothesis and tested rather than repeated.
 
-Verified so far only for tasks declaring no `container` directive; the
-containerised case is what E3 now exists to check.
+**And the gate itself has now been run there.** `gate/` and `descriptors/`,
+copied byte-identically into a HealthOmics workflow bundle, permit and refuse
+per task on the managed service: with `minReadLength=10`, `GATED_QC` completed
+and published its PERMIT record while `GATED_TRIM` failed with
+`gate: REFUSE raw-reads:trim [CONDITION_VIOLATED] minReadLength: 10 violates >= 20`
+and produced no output. Permitted work proceeded and forbidden work did not, in
+the same run.
+
+Two constraints came out of it, both measured rather than assumed: HealthOmics
+runs `beforeScript` **inside the task container** (the local engine runs it on
+the host), so the gate must ship in the bundle and be invoked by absolute path;
+and **every task image must carry a Python interpreter**, which many
+biocontainers do not.
 
 ## Honest limits
 

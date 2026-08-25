@@ -13,9 +13,28 @@ This file is how to run it.
 
 | | |
 |---|---|
-| E1 positive control (local Nextflow) | **run, calibrated** — `results/e1_local_control.json` |
-| **E1 against HealthOmics** | **RUN 2026-08-24 — the claim it tested is REFUTED** |
-| E2, E3 against HealthOmics | not run; E3 needs redesigning in light of E1 |
+| Positive controls (local Nextflow) | run, calibrated — `e1_local_control.json`, `e1c_local_control.md` |
+| **E1 — `beforeScript`, no container** | **RUN — honoured. The claim is REFUTED** |
+| **E1c/E1d — `beforeScript`, containerised** | **RUN — honoured, and it runs INSIDE the image** |
+| **The real gate, per task** | **RUN — it permits, it refuses, and the refused task never starts** |
+| E2 (`StartRun` gate + IAM deny) | not run |
+| E3 (nf-core/demo, 30 replicates) | not run; blocked on interpreter-bearing images |
+
+## The headline
+
+**The admission gate runs unchanged on AWS HealthOmics, per task, and its
+refusals are real.** In one run with `minReadLength=10`: `GATED_QC` completed
+and published its PERMIT record; `GATED_TRIM` failed with
+
+```
+Task started
+gate: REFUSE raw-reads:trim [CONDITION_VIOLATED] minReadLength: 10 violates >= 20
+Task failed
+```
+
+and produced no output. Permitted work proceeded, forbidden work did not, in
+the same run — the outcome a `StartRun`-level gate structurally cannot produce.
+Evidence: [`results/gate_real_evidence.md`](results/gate_real_evidence.md).
 
 ## The E1 result
 
@@ -38,10 +57,14 @@ already wrong about `scratch`. That list was the sole basis for the claim, and
 treating it as a hypothesis rather than as evidence is what made this
 detectable.
 
-**Scope.** Verified for tasks declaring no `container` directive, which
-HealthOmics runs in its default container. Not yet verified for tasks
-declaring an ECR image — the case the real gate operates in. State the result
-with that boundary until E3 closes it.
+**Scope — since closed.** E1c/E1d repeated this for a task declaring an ECR
+image and the directive is still honoured. But **it runs inside the declared
+container**, where the local engine runs it on the host. That is a real
+portability constraint: the gate's code and descriptors must ship in the
+workflow bundle (reached at `/mnt/workflow/definition/`, by absolute path,
+because `bin/` is not on `PATH` at hook time), and **every task image must
+carry a Python interpreter**. Many biocontainers do not, which is what now
+blocks the nf-core/demo arm.
 
 ## What this does to the argument
 
@@ -56,6 +79,9 @@ only place a policy can be imposed on someone else.
 That is a different and narrower contribution, and it is not yet established —
 IAM can condition `StartRun` on a specific workflow ID, which may close it
 entirely. It should be tested, not asserted.
+
+The measured result makes that question sharper rather than softer: the gate
+demonstrably works, so the only remaining question about it is who it protects.
 
 ## The finding this arm exists to test
 
