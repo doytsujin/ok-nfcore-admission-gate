@@ -85,7 +85,13 @@ governance, reproducibility
 | Identifier | Relation |
 |---|---|
 | `https://github.com/doytsujin/ok-nfcore-admission-gate/tree/v1.0.0` | is supplement to |
-| `10.5281/zenodo.22005283` | references — the policy profile the descriptors are decided against |
+| `10.5281/zenodo.22018156` | references — the policy profile the descriptors are decided against |
+
+That is the profile's **concept** DOI, which resolves to its newest version.
+An earlier draft of this sheet named `10.5281/zenodo.22005283`; that DOI and
+the four minted alongside it were deleted on 2026-08-19 and return 410. The
+published record already carries the correct identifier — this sheet was the
+stale copy, corrected 2026-09-06.
 
 ## Check the record before walking away
 
